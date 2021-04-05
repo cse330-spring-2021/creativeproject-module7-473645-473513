@@ -2,6 +2,8 @@
 Mia Collymore Abbas - 473645 - miacollymoreabbas \
 Joseph Merkadeau - 473513 - jmerkadeau 
 
+# Project Description
+Our idea is to create a website that auto-generates playlists based on what audio features the user wants. For our creative portion we want to expand on our website's capabilities by allowing the user to connect their Spotify account to our website.
 # Rubric
 ### Rubric turned in on time (5 points)
 - Remember to get it checked out by a TA!
