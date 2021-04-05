@@ -27,3 +27,4 @@ Our idea is to create a website that auto-generates playlists based on what audi
 ### Styling (5 points)
 - 5 - Page is responsive/mobile-friendly
 
+Approved by Jason Ren
