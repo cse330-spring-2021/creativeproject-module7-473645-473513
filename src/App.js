@@ -11,7 +11,8 @@ class App extends Component {
     super();
     this.state = {
       token: null,
-      items: [{name:""}],
+      userPlaylists: [{name:""}],
+      tracks: [{name:"", id:""}],
       //is_playing: "Paused",
       //progress_ms: 0,
       no_data: false
@@ -53,35 +54,6 @@ class App extends Component {
     }
   }
 
-
-  /* getCurrentlyPlaying(token) {
-    // Make a call using the token
-    $.ajax({
-      url: "https://api.spotify.com/v1/me/player",
-      type: "GET",
-      beforeSend: xhr => {
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-      },
-      success: data => {
-        // Checks if the data is not empty
-        if(!data) {
-          this.setState({
-            no_data: true,
-          });
-          return;
-        }
-
-        this.setState({
-          item: data.item,
-          is_playing: data.is_playing,
-          progress_ms: data.progress_ms,
-          no_data: false  //We need to "reset" the boolean, in case the
-                            //user does not give F5 and has opened his Spotify. 
-        });
-      }
-    });
-  } */
-
   getPlaylists(token){
     $.ajax({
       url: "https://api.spotify.com/v1/me/playlists?limit=50",
@@ -99,7 +71,7 @@ class App extends Component {
         }
 
         this.setState({
-          items: data.items,
+          userPlaylists: data.items,
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
@@ -124,7 +96,36 @@ class App extends Component {
         }
 
         this.setState({
-          items: data.items,
+          tracks: data.items,
+          no_data: false /* We need to "reset" the boolean, in case the
+                            user does not give F5 and has opened his Spotify. */
+        });
+      }
+    });
+  }
+
+  getFeatures(token, id){
+    $.ajax({
+      url: ("https://api.spotify.com/v1/audio-features/" + {id}) ,
+      type: "GET",
+      beforeSend: xhr => {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: data => {
+        // Checks if the data is not empty
+        if(!data) {
+          this.setState({
+            no_data: true,
+          });
+          return;
+        }
+
+        this.setState({
+          danceability: data.items,
+          energy: data.energy,
+          instrumentalness: data.instrumentalness,
+          loudness: data.loudness,
+          track_href: data.track_href,
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
@@ -148,14 +149,14 @@ class App extends Component {
             </a>
           )}
           {this.state.token && !this.state.no_data && (
-            // console.log(this.state.items.length),
             /*<Player
               item={this.state.item}
               is_playing={this.state.is_playing}
               progress_ms={this.state.progress_ms}
             />*/
             <Playlist
-              items={this.state.items}
+              userPlaylists={this.state.userPlaylists}
+              tracks={this.state.tracks}
             />
           )}
           {this.state.no_data && (

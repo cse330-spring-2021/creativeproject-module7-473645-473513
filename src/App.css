@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+a{
+  background-image: "green-background.gif";
+  font-size: x-large;
+  padding-top: 60px;
+  margin-top: 60px;
+}
+
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;
