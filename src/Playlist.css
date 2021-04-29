@@ -2,3 +2,12 @@
     text-align: left;
     padding-left: -30px;
 }
+
+.playlistFunctions{
+    padding: 40px;
+    margin: 20px;
+}
+
+input{
+    margin-left: 20px;
+}

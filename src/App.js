@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import * as $ from "jquery";
 import { authEndpoint, clientId, redirectUri, scopes } from "./config";
 import hash from "./hash";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
 import Playlist from "./Playlist";
 
@@ -18,6 +18,7 @@ class App extends Component {
     };
 
     this.getPlaylists = this.getPlaylists.bind(this);
+    this.getTracks = this.getTracks.bind(this);
     this.tick = this.tick.bind(this);
   }
 
@@ -33,6 +34,7 @@ class App extends Component {
         token: _token
       });
       this.getPlaylists(_token);
+      this.getTracks(_token);
     }
 
     // set interval for polling every 5 seconds
@@ -47,6 +49,7 @@ class App extends Component {
   tick() {
     if(this.state.token) {
       this.getPlaylists(this.state.token);
+      this.getTracks(this.state.token);
     }
   }
 
@@ -81,7 +84,32 @@ class App extends Component {
 
   getPlaylists(token){
     $.ajax({
-      url: "https://api.spotify.com/v1/me/playlists",
+      url: "https://api.spotify.com/v1/me/playlists?limit=50",
+      type: "GET",
+      beforeSend: xhr => {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: data => {
+        // Checks if the data is not empty
+        if(!data) {
+          this.setState({
+            no_data: true,
+          });
+          return;
+        }
+
+        this.setState({
+          items: data.items,
+          no_data: false /* We need to "reset" the boolean, in case the
+                            user does not give F5 and has opened his Spotify. */
+        });
+      }
+    });
+  }
+
+  getTracks(token){
+    $.ajax({
+      url: "https://api.spotify.com/v1/me/top/tracks?limit=50",
       type: "GET",
       beforeSend: xhr => {
         xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -108,7 +136,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
           {!this.state.token && (
             <a
               className="btn btn--loginApp-link"
@@ -120,7 +148,7 @@ class App extends Component {
             </a>
           )}
           {this.state.token && !this.state.no_data && (
-            // console.log(this.state.items[0].name),
+            // console.log(this.state.items.length),
             /*<Player
               item={this.state.item}
               is_playing={this.state.is_playing}
