@@ -12,7 +12,7 @@ class App extends Component {
     this.state = {
       token: null,
       userPlaylists: [{name:""}],
-      tracks: [{name:"", id:""}],
+      tracks: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
       //is_playing: "Paused",
       //progress_ms: 0,
       no_data: false
@@ -100,37 +100,50 @@ class App extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
+
+        for(var i = 0; i < this.state.tracks.length; i++){
+          this.getFeatures(token, this.state.tracks[i].id, i)
+        }
       }
     });
   }
 
-  getFeatures(token, id){
+  getFeatures(token, id, index){
+    // console.log("https://api.spotify.com/v1/audio-features/" + id)
     $.ajax({
-      url: ("https://api.spotify.com/v1/audio-features/" + {id}) ,
+      url: "https://api.spotify.com/v1/audio-features/" + id ,
       type: "GET",
       beforeSend: xhr => {
         xhr.setRequestHeader("Authorization", "Bearer " + token);
       },
       success: data => {
         // Checks if the data is not empty
+        // console.log("success")
         if(!data) {
           this.setState({
             no_data: true,
           });
           return;
         }
+        var tempTracks = this.state.tracks;
+        tempTracks[index].danceability = data.danceability;
+        tempTracks[index].energy = data.energy;
+        tempTracks[index].instrumentalness = data.instrumentalness;
+        tempTracks[index].loudness = data.loudness;
+        tempTracks[index].track_href = data.track_href;
 
         this.setState({
-          danceability: data.items,
-          energy: data.energy,
-          instrumentalness: data.instrumentalness,
-          loudness: data.loudness,
-          track_href: data.track_href,
+          tracks: tempTracks,
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
+        console.log(this.state.tracks)
       }
     });
+  }
+
+  sortTracks(){
+
   }
 
   render() {
@@ -158,6 +171,7 @@ class App extends Component {
               userPlaylists={this.state.userPlaylists}
               tracks={this.state.tracks}
             />
+            
           )}
           {this.state.no_data && (
             <p>

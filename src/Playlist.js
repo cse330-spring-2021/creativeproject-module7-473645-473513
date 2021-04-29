@@ -11,7 +11,7 @@ const Playlist = props => {
     const topTracks = []
     for(var j = 0; j < props.tracks.length; j++){
         topTracks.push(props.tracks[j].id)
-        console.log(props.tracks[j].id)
+        // console.log(props.tracks[j].id)
     }
     
     return (
