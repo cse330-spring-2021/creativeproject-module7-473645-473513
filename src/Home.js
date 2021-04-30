@@ -143,10 +143,7 @@ class Home extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-
-        for(var i = 0; i < this.state.tracks.length; i++){
-          this.getFeatures(this.state.tracks[i].id, i)
-        }
+        this.getFeatures();
       }
     });
   }
@@ -187,9 +184,17 @@ class Home extends Component {
   // }
 // this function gets the audio features from a song
 // it runs a ton of times though, causes a 429 error
-  getFeatures(id, index){
+  getFeatures(){
+    var tracksforFeatures = "";
+    for(var f = 0; f < this.state.tracks.length-1; f++){
+      if(this.state.tracks[f].id != "undefined"){
+        tracksforFeatures = tracksforFeatures+this.state.tracks[f].id
+        tracksforFeatures = tracksforFeatures+","
+      }
+    } 
+    tracksforFeatures = tracksforFeatures + this.state.tracks[this.state.tracks.length-1].id
     $.ajax({
-      url: "https://api.spotify.com/v1/audio-features/" + id,
+      url: "https://api.spotify.com/v1/audio-features?ids=" + tracksforFeatures,
       type: "GET",
       beforeSend: xhr => {
         xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
@@ -203,14 +208,17 @@ class Home extends Component {
           return;
         }
         var tempTracks = this.state.tracks;
-        tempTracks[index].danceability = data.danceability;
-        tempTracks[index].energy = data.energy;
-        tempTracks[index].instrumentalness = data.instrumentalness;
-        tempTracks[index].loudness = data.loudness;
-        tempTracks[index].track_href = data.track_href;
-
+        for(var k = 0; k < this.state.tracks.length; k++){
+          tempTracks[k].danceability = data[k].danceability;
+          tempTracks[k].energy = data[k].energy;
+          tempTracks[k].instrumentalness = data[k].instrumentalness;
+          tempTracks[k].loudness = data[k].loudness;
+          tempTracks[k].track_href = data[k].track_href;
+        }
+        console.log(tempTracks)
+       
         this.setState({
-          tracks: tempTracks,
+          // tracks: tempTracks,
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
