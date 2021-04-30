@@ -17,6 +17,7 @@ class App extends Component {
       //is_playing: "Paused",
       //progress_ms: 0,
       artists:[{name:"", genres:[]}],
+      songsforPlaylist: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
       no_data: false
     };
 
@@ -250,6 +251,11 @@ class App extends Component {
       this.state.tracks = newTracks;
     }
 
+    // for(var k = 0; k < 20; k++){
+    //   this.songsforPlaylist[k] = this.state.tracks[k];
+
+    // }
+
   }
 
   createPlaylist(token){
@@ -306,6 +312,7 @@ class App extends Component {
               tracks={this.state.tracks}
               createPlaylist={this.state.createPlaylist}
               token={this.state.token}
+              songsforPlaylist={this.state.songsforPlaylist}
             />
             
           )}
