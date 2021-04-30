@@ -209,16 +209,16 @@ class Home extends Component {
         }
         var tempTracks = this.state.tracks;
         for(var k = 0; k < this.state.tracks.length; k++){
-          tempTracks[k].danceability = data[k].danceability;
-          tempTracks[k].energy = data[k].energy;
-          tempTracks[k].instrumentalness = data[k].instrumentalness;
-          tempTracks[k].loudness = data[k].loudness;
-          tempTracks[k].track_href = data[k].track_href;
+          tempTracks[k].danceability = data.audio_features[k].danceability;
+          tempTracks[k].energy = data.audio_features[k].energy;
+          tempTracks[k].instrumentalness = data.audio_features[k].instrumentalness;
+          tempTracks[k].loudness = data.audio_features[k].loudness;
+          tempTracks[k].track_href = data.audio_features[k].track_href;
         }
-        console.log(tempTracks)
+        // console.log(tempTracks)
        
         this.setState({
-          // tracks: tempTracks,
+          tracks: tempTracks,
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
