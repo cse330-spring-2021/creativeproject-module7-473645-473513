@@ -5,6 +5,8 @@ import hash from "./hash";
 // import logo from "./logo.svg";
 import "./App.css";
 import Playlist from "./Playlist";
+import SignIn from './SignIn.js';
+import SignUp from './SignUp.js';
 
 class App extends Component {
   constructor() {
@@ -289,6 +291,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <SignUp />
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           {!this.state.token && (
@@ -316,6 +319,7 @@ class App extends Component {
             />
             
           )}
+
           {this.state.no_data && (
             <p>
               You need to be playing a song on Spotify, for something to appear here.
