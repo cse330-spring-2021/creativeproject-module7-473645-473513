@@ -144,6 +144,8 @@ class Home extends Component {
                             user does not give F5 and has opened his Spotify. */
         });
         this.getFeatures();
+        this.sortTracks();
+
       }
     });
   }
@@ -215,7 +217,6 @@ class Home extends Component {
           tempTracks[k].loudness = data.audio_features[k].loudness;
           tempTracks[k].track_href = data.audio_features[k].track_href;
         }
-        // console.log(tempTracks)
        
         this.setState({
           tracks: tempTracks,
@@ -242,25 +243,36 @@ class Home extends Component {
       var newTracks = this.state.tracks.sort(function(a, b) {
             return a.danceability - b.danceability;
       });
-      this.state.tracks = newTracks;
+      for(var g = 0; g < 10; g++){
+        this.state.songsforPlaylist[g] = newTracks[g];
+
+      }
     }
     else if(word === "energy"){
       var newTracks = this.state.tracks.sort(function(a, b) {
             return a.energy - b.energy;
       });
-      this.state.tracks = newTracks;
+      for(var g = 0; g < 10; g++){
+        this.state.songsforPlaylist[g] = newTracks[g];
+
+      }
     }
     else if(word === "instrumentalness"){
       var newTracks = this.state.tracks.sort(function(a, b) {
             return a.instrumentalness - b.instrumentalness;
       });
-      this.state.tracks = newTracks;
+      for(var g = 0; g < 10; g++){
+        this.state.songsforPlaylist[g] = newTracks[g];
+
+      }
     }
     else if(word === "loudness"){
       var newTracks = this.state.tracks.sort(function(a, b) {
             return a.loudness - b.loudness;
       });
-      this.state.tracks = newTracks;
+      for(var g = 0; g < 10; g++){
+        this.state.songsforPlaylist[g] = newTracks[g];
+      }
     }
 
   }
@@ -269,7 +281,7 @@ class Home extends Component {
   createPlaylist(token){
     $.ajax({
       url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
-      type: "POST",
+      // type: "POST",
       beforeSend: xhr => {
         xhr.setRequestHeader("Authorization", "Bearer " + token);
       },
