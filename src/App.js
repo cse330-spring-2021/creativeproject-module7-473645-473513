@@ -14,11 +14,13 @@ class App extends Component {
     this.state = {
       token: null,
       user_id:"",
+      // users first 50 playlists
       userPlaylists: [{name:""}],
+      //users top tracks
       tracks: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
-      //is_playing: "Paused",
-      //progress_ms: 0,
+      // users top artists
       artists:[{name:"", genres:[]}],
+      // an array im working on to hold the songs that will be added to the playlist
       songsforPlaylist: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
       no_data: false
     };
@@ -67,7 +69,7 @@ class App extends Component {
       this.setUser(this.state.token);
     }
   }
-
+// function that gets the current spotify user id
   setUser(token){
     $.ajax({
       url: "	https://api.spotify.com/v1/me",
@@ -92,7 +94,7 @@ class App extends Component {
       }
     });
   }
-
+// function that gets current user's first 50 playlists
   getPlaylists(token){
     $.ajax({
       url: "https://api.spotify.com/v1/me/playlists?limit=50",
@@ -117,7 +119,7 @@ class App extends Component {
       }
     });
   }
-
+// function that gets current user's top 50 tracks
   getTracks(token){
     $.ajax({
       url: "https://api.spotify.com/v1/me/top/tracks?limit=50",
@@ -146,7 +148,7 @@ class App extends Component {
       }
     });
   }
-
+// function that gets current user's top 50 artists
   getArtists(token){
     $.ajax({
       url: "https://api.spotify.com/v1/me/top/artists?limit=50",
@@ -181,9 +183,9 @@ class App extends Component {
   // getGenres(token, id, index){
 
   // }
-
+// this function gets the audio features from a song
+// it runs a ton of times though, causes a 429 error
   getFeatures(id, index){
-    // console.log("https://api.spotify.com/v1/audio-features/" + id)
     $.ajax({
       url: "https://api.spotify.com/v1/audio-features/" + id,
       type: "GET",
@@ -192,7 +194,6 @@ class App extends Component {
       },
       success: data => {
         // Checks if the data is not empty
-        // console.log("success")
         if(!data) {
           this.setState({
             no_data: true,
@@ -211,7 +212,6 @@ class App extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        // console.log(this.state.tracks)
       }
     });
   }
@@ -253,13 +253,9 @@ class App extends Component {
       this.state.tracks = newTracks;
     }
 
-    // for(var k = 0; k < 20; k++){
-    //   this.songsforPlaylist[k] = this.state.tracks[k];
-
-    // }
-
   }
-
+// function is in progress 
+// getting POST errors
   createPlaylist(token){
     $.ajax({
       url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
@@ -283,7 +279,6 @@ class App extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        // console.log(this.state.tracks)
       }
     });
   }
@@ -305,11 +300,6 @@ class App extends Component {
             </a>
           )}
           {this.state.token && !this.state.no_data && (
-            /*<Player
-              item={this.state.item}
-              is_playing={this.state.is_playing}
-              progress_ms={this.state.progress_ms}
-            />*/
             <Playlist
               userPlaylists={this.state.userPlaylists}
               tracks={this.state.tracks}
