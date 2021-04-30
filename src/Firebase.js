@@ -1,5 +1,5 @@
 import React from 'react';
-import firebase from "firebase/app";
+import * as firebase from "firebase";
 import "firebase/auth";
 import "firebase/database";
 
@@ -12,7 +12,7 @@ const firebaseConfig = {
     messagingSenderId: "374442748752",
     appId: "1:374442748752:web:7c9e7e792a580a7b9f5a55",
     measurementId: "G-5DFC9BY1VJ"
-};
+  };
 
 firebase.initializeApp(firebaseConfig);
 
@@ -25,7 +25,8 @@ if (!firebase.apps.length) {
 //Initializes the firebase app so that other files
 //can access the user info and the data
 
-export const AuthContext = React.createContext(null);
+
+// export const AuthContext = React.createContext(null);
 
 
 export var auth = firebase.auth();

@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
-import { auth, database, provider, AuthContext } from './Firebase.js';
+import React, { useState } from "react";
+import { auth, database, provider } from './Firebase.js';
 
 
-const SignUp = () => {
+function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setErrors] = useState("");
 
 
-    const Auth = useContext(AuthContext);
     const handleSubmit = e => {
         e.preventDefault();
         auth.createUserWithEmailAndPassword(email, password).then(res => {
@@ -18,23 +17,30 @@ const SignUp = () => {
           .catch(e => {
             setErrors(e.message);
           });
+
+          console.log(e.target.email.value);
+        //   e.target.email.value = "";
+        //   e.target.password.value = "";
+        setEmail("");
+        setPassword("");
       };
 
 
     return (
         <div>
+        <h3>Sign Up:</h3>
         <form onSubmit={e => handleSubmit(e)}>
             <input
                 value={email}
                 type='email'
-                name={email}
+                name='email'
                 onChange={e => setEmail(e.target.value)}
                 placeholder='email'
             />     
             <input
                 value={password}
                 type='password'
-                name={password}
+                name='password'
                 onChange={e => setPassword(e.target.value)}
                 placeholder='password'
             />     
