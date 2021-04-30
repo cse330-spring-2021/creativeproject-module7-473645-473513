@@ -11,15 +11,20 @@ class App extends Component {
     super();
     this.state = {
       token: null,
+      user_id:"",
       userPlaylists: [{name:""}],
       tracks: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
       //is_playing: "Paused",
       //progress_ms: 0,
+      artists:[{name:"", genres:[]}],
       no_data: false
     };
 
     this.getPlaylists = this.getPlaylists.bind(this);
     this.getTracks = this.getTracks.bind(this);
+    this.getFeatures = this.getFeatures.bind(this);
+    this.getArtists = this.getArtists.bind(this);
+    this.setUser = this.setUser.bind(this);
     this.tick = this.tick.bind(this);
   }
 
@@ -36,6 +41,9 @@ class App extends Component {
       });
       this.getPlaylists(_token);
       this.getTracks(_token);
+      // this.getFeatures(_token, null, null);
+      this.getArtists(_token);
+      this.setUser(_token);
     }
 
     // set interval for polling every 5 seconds
@@ -51,7 +59,35 @@ class App extends Component {
     if(this.state.token) {
       this.getPlaylists(this.state.token);
       this.getTracks(this.state.token);
+      // this.getFeatures(this.state.token);
+      this.getArtists(this.state.token);
+      this.setUser(this.state.token);
     }
+  }
+
+  setUser(token){
+    $.ajax({
+      url: "	https://api.spotify.com/v1/me",
+      type: "GET",
+      beforeSend: xhr => {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: data => {
+        // Checks if the data is not empty
+        if(!data) {
+          this.setState({
+            no_data: true,
+          });
+          return;
+        }
+
+        this.setState({
+          user_id: data.id,
+          no_data: false /* We need to "reset" the boolean, in case the
+                            user does not give F5 and has opened his Spotify. */
+        });
+      }
+    });
   }
 
   getPlaylists(token){
@@ -102,19 +138,54 @@ class App extends Component {
         });
 
         for(var i = 0; i < this.state.tracks.length; i++){
-          this.getFeatures(token, this.state.tracks[i].id, i)
+          this.getFeatures(this.state.tracks[i].id, i)
         }
       }
     });
   }
 
-  getFeatures(token, id, index){
-    // console.log("https://api.spotify.com/v1/audio-features/" + id)
+  getArtists(token){
     $.ajax({
-      url: "https://api.spotify.com/v1/audio-features/" + id ,
+      url: "https://api.spotify.com/v1/me/top/artists?limit=50",
       type: "GET",
       beforeSend: xhr => {
         xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: data => {
+        // Checks if the data is not empty
+        if(!data) {
+          this.setState({
+            no_data: true,
+          });
+          return;
+        }
+
+        this.setState({
+          artists: data.items,
+          no_data: false /* We need to "reset" the boolean, in case the
+                            user does not give F5 and has opened his Spotify. */
+        });
+        // // console.log(this.state.artists)
+        // for(var i = 0; i < this.state.artists.length; i++){
+        //   this.getGenres(token, this.state.artists[i].id, i)
+        // }
+        this.sortTracks();
+
+      }
+    });
+  }
+
+  // getGenres(token, id, index){
+
+  // }
+
+  getFeatures(id, index){
+    // console.log("https://api.spotify.com/v1/audio-features/" + id)
+    $.ajax({
+      url: "https://api.spotify.com/v1/audio-features/" + id,
+      type: "GET",
+      beforeSend: xhr => {
+        xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
       },
       success: data => {
         // Checks if the data is not empty
@@ -137,13 +208,76 @@ class App extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        console.log(this.state.tracks)
+        // console.log(this.state.tracks)
       }
     });
   }
 
   sortTracks(){
+    var but = document.getElementById("createPlaylist");
+    but.addEventListener("click", this.createPlaylist(this.state.token));
+    var feature = document.getElementsByName("musicFeature");
+    var word;
+    for(var i = 0; i < feature.length; i++){
+      if(feature[i].checked){
+        word = feature[i].value;
+      }
+    }
+    var songs = [];
+    // all these orders are random, need to fix
+    if(word === "danceability"){
+      var newTracks = this.state.tracks.sort(function(a, b) {
+            return a.danceability - b.danceability;
+      });
+      this.state.tracks = newTracks;
+    }
+    else if(word === "energy"){
+      var newTracks = this.state.tracks.sort(function(a, b) {
+            return a.energy - b.energy;
+      });
+      this.state.tracks = newTracks;
+    }
+    else if(word === "instrumentalness"){
+      var newTracks = this.state.tracks.sort(function(a, b) {
+            return a.instrumentalness - b.instrumentalness;
+      });
+      this.state.tracks = newTracks;
+    }
+    else if(word === "loudness"){
+      var newTracks = this.state.tracks.sort(function(a, b) {
+            return a.loudness - b.loudness;
+      });
+      this.state.tracks = newTracks;
+    }
 
+  }
+
+  createPlaylist(token){
+    $.ajax({
+      url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
+      type: "POST",
+      beforeSend: xhr => {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: data => {
+        // Checks if the data is not empty
+        // console.log("success")
+        if(!data) {
+          this.setState({
+            no_data: true,
+          });
+          return;
+        }
+        
+
+        this.setState({
+          // tracks: tempTracks,
+          no_data: false /* We need to "reset" the boolean, in case the
+                            user does not give F5 and has opened his Spotify. */
+        });
+        // console.log(this.state.tracks)
+      }
+    });
   }
 
   render() {
@@ -170,6 +304,8 @@ class App extends Component {
             <Playlist
               userPlaylists={this.state.userPlaylists}
               tracks={this.state.tracks}
+              createPlaylist={this.state.createPlaylist}
+              token={this.state.token}
             />
             
           )}

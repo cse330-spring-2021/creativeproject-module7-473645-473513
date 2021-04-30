@@ -1,6 +1,6 @@
 import React from "react";
 import "./Playlist.css";
-
+import token from "./App"
 
 const Playlist = props => {
     const playlists = []
@@ -11,16 +11,19 @@ const Playlist = props => {
     const topTracks = []
     for(var j = 0; j < props.tracks.length; j++){
         topTracks.push(props.tracks[j].id)
-        // console.log(props.tracks[j].id)
     }
+    // const createdPlaylist = []
+    // for(var k = 0; k < props.createdPlaylist.length; k++){
+
+    // }
     
     return (
         <div className="App">
           <div className="main-wrapper">
             <div className="playlistFunctions">
-                <input type="radio" id="danceable" name="musicFeature" value="danceable"></input>
+                <input type="radio" id="danceable" name="musicFeature" value="danceability"></input>
                 <label htmlFor="danceable">Danceability</label>
-                <input type="radio" id="energetic" name="musicFeature" value="energetic"></input>
+                <input type="radio" id="energetic" name="musicFeature" value="energy"></input>
                 <label htmlFor="energetic">Energetic</label>
                 <input type="radio" id="instrumentalness" name="musicFeature" value="instrumentalness"></input>
                 <label htmlFor="instrumentalness">Instrumentalness</label>
@@ -29,6 +32,8 @@ const Playlist = props => {
                 <input type="radio" id="loudness" name="musicFeature" value="loudness"></input>
                 <label htmlFor="loudness">Loudness</label>
             </div>
+            <button id = "createPlaylist"> Create a Playlist </button>
+            <ul className = "createdPlaylist"></ul>
             <div className="playlists">
                 <ul>
                      {playlists}
@@ -37,6 +42,7 @@ const Playlist = props => {
           </div>
         </div>
       );
+
 }
 
 export default Playlist;
