@@ -9,6 +9,7 @@ import SignUp from './SignUp.js';
 import SignIn from './SignIn.js';
 import SignOut from './SignOut.js';
 
+// create recommendations array of songs for user and then add that to the songsforPlaylists
 
 class Home extends Component {
   constructor() {
@@ -19,11 +20,11 @@ class Home extends Component {
       // users first 50 playlists
       userPlaylists: [{name:""}],
       //users top tracks
-      tracks: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
+      tracks: [{name:"", id:"", album: {images: [{ url: "" }]}, artists: [{ name: "" }], danceability:0, loudness: 0, energy: 0, instrumentalness: 0, valence: 0, track_href: ""}],
       // users top artists
-      artists:[{name:"", genres:[]}],
+      artists:[{name:"", id: "", genres:[]}],
       // an array im working on to hold the songs that will be added to the playlist
-      songsforPlaylist: [{name:"", id:"", danceability:0, loudness: 0, energy: 0, instrumentalness: 0, track_href: ""}],
+      songsforPlaylist: [{name:"", id:"", album: {images: [{ url: "" }]}, artists: [{ name: "" }], track_href: ""}],
       no_data: false
     };
 
@@ -32,7 +33,7 @@ class Home extends Component {
     this.getFeatures = this.getFeatures.bind(this);
     this.getArtists = this.getArtists.bind(this);
     this.setUser = this.setUser.bind(this);
-    this.tick = this.tick.bind(this);
+    this.getRecs = this.getRecs.bind(this);
   }
 
 
@@ -51,10 +52,9 @@ class Home extends Component {
       // this.getFeatures(_token, null, null);
       this.getArtists(_token);
       this.setUser(_token);
+      this.getRecs(_token);
     }
 
-    // set interval for polling every 5 seconds
-    this.interval = setInterval(() => this.tick(), 5000);
   }
 
   componentWillUnmount() {
@@ -62,15 +62,7 @@ class Home extends Component {
     clearInterval(this.interval);
   }
 
-  tick() {
-    if(this.state.token) {
-      this.getPlaylists(this.state.token);
-      this.getTracks(this.state.token);
-      // this.getFeatures(this.state.token);
-      this.getArtists(this.state.token);
-      this.setUser(this.state.token);
-    }
-  }
+ 
 // function that gets the current spotify user id
   setUser(token){
     $.ajax({
@@ -144,11 +136,61 @@ class Home extends Component {
                             user does not give F5 and has opened his Spotify. */
         });
         this.getFeatures();
-        this.sortTracks();
-
+        // this.sortTracks();
+        console.log(this.state)
       }
     });
   }
+//function that gets user recommendations
+getRecs(token){
+  // console.log(this.state)
+  var artistIds = "";
+  // for(var i = 0; i < 3; i++){
+  //   artistIds = artistIds + this.state.artists[i].id
+  //   artistIds = artistIds + ","
+  // }
+  // var songIds = ""
+  // for(var j = 0; j < 2; j++){
+  //   songIds = songIds + this.state.tracks[j].id
+  //   songIds = songIds + ","
+  // }
+  // sliders are all undefined rn
+    var urlEnd = ""
+    if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
+      var loudnessValue = (document.getElementById("loudness").value);
+      var danceabiliityValue = (document.getElementById("danceable").value)/100;
+      var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
+      var valenceValue = (document.getElementById("valence").value)/100;
+      var energyValue = (document.getElementById("energetic").value)/100;
+    }
+    urlEnd = urlEnd + "target_loudness=" + loudnessValue + "&target_valence=" + valenceValue + "&target_energy=" + energyValue + "&target_instrumentalness=" + instrumentalnessValue + "&target_danceability=" + danceabiliityValue;
+    console.log(urlEnd)
+    console.log(urlEnd)
+  $.ajax({
+    url: "https://api.spotify.com/v1/recommendations",
+    type: "GET",
+    beforeSend: xhr => {
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
+    },
+    success: data => {
+      // Checks if the data is not empty
+      if(!data) {
+        this.setState({
+          no_data: true,
+        });
+        return;
+      }
+
+      this.setState({
+        // tracks: data.items,
+        no_data: false /* We need to "reset" the boolean, in case the
+                          user does not give F5 and has opened his Spotify. */
+      });
+
+    }
+  })
+}
+
 // function that gets current user's top 50 artists
   getArtists(token){
     $.ajax({
@@ -171,25 +213,16 @@ class Home extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        // // console.log(this.state.artists)
-        // for(var i = 0; i < this.state.artists.length; i++){
-        //   this.getGenres(token, this.state.artists[i].id, i)
-        // }
-        this.sortTracks();
-
       }
     });
   }
 
-  // getGenres(token, id, index){
-
-  // }
 // this function gets the audio features from a song
 // it runs a ton of times though, causes a 429 error
   getFeatures(){
     var tracksforFeatures = "";
     for(var f = 0; f < this.state.tracks.length-1; f++){
-      if(this.state.tracks[f].id != "undefined"){
+      if(this.state.tracks[f].id !== "undefined"){
         tracksforFeatures = tracksforFeatures+this.state.tracks[f].id
         tracksforFeatures = tracksforFeatures+","
       }
@@ -229,51 +262,26 @@ class Home extends Component {
 
   sortTracks(){
     var but = document.getElementById("createPlaylist");
-    but.addEventListener("click", this.createPlaylist(this.state.token));
-    var feature = document.getElementsByName("musicFeature");
-    var word;
-    for(var i = 0; i < feature.length; i++){
-      if(feature[i].checked){
-        word = feature[i].value;
-      }
-    }
+    // but.addEventListener("click", this.createPlaylist(this.state.token));
+    // var loudnessValue = (document.getElementById("loudness").value);
+    // var danceabiliityValue = (document.getElementById("danceable").value)/100;
+    // var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
+    // var valenceValue = (document.getElementById("valence").value)/100;
+    // var energyValue = (document.getElementById("energy").value)/100;
+
     var songs = [];
     // all these orders are random, need to fix
-    if(word === "danceability"){
-      var newTracks = this.state.tracks.sort(function(a, b) {
-            return a.danceability - b.danceability;
-      });
-      for(var g = 0; g < 10; g++){
-        this.state.songsforPlaylist[g] = newTracks[g];
-
-      }
-    }
-    else if(word === "energy"){
-      var newTracks = this.state.tracks.sort(function(a, b) {
-            return a.energy - b.energy;
-      });
-      for(var g = 0; g < 10; g++){
-        this.state.songsforPlaylist[g] = newTracks[g];
-
-      }
-    }
-    else if(word === "instrumentalness"){
-      var newTracks = this.state.tracks.sort(function(a, b) {
-            return a.instrumentalness - b.instrumentalness;
-      });
-      for(var g = 0; g < 10; g++){
-        this.state.songsforPlaylist[g] = newTracks[g];
-
-      }
-    }
-    else if(word === "loudness"){
-      var newTracks = this.state.tracks.sort(function(a, b) {
-            return a.loudness - b.loudness;
-      });
-      for(var g = 0; g < 10; g++){
-        this.state.songsforPlaylist[g] = newTracks[g];
-      }
-    }
+    // var uDance = 
+    // var lDance
+    // var uLoud
+    // var lLoud
+    // var uInst
+    // var lInst
+    // var uVal
+    // var lVal
+    // var uEn
+    // var lEn
+    // if()
 
   }
 // function is in progress 
@@ -321,16 +329,19 @@ class Home extends Component {
             </a>
           )}
           {this.state.token && !this.state.no_data && (
+            <div id = "playlists">
             <Playlist
               userPlaylists={this.state.userPlaylists}
               tracks={this.state.tracks}
               createPlaylist={this.state.createPlaylist}
               token={this.state.token}
               songsforPlaylist={this.state.songsforPlaylist}
+              artists={this.state.artists}
             />
-            
-          )}
+            </div>
 
+          )}
+            
           {this.state.no_data && (
             <p>
               You need to be playing a song on Spotify, for something to appear here.
