@@ -138,24 +138,38 @@ class Home extends Component {
                             user does not give F5 and has opened his Spotify. */
         });
         this.getFeatures();
-        // this.sortTracks();
-        console.log(this.state)
+        this.getArtists(token);
+        this.getRecs();
+        this.sortTracks();
       }
     });
   }
 //function that gets user recommendations
-getRecs(token){
-  // console.log(this.state)
+getRecs(){
   var artistIds = "";
-  // for(var i = 0; i < 3; i++){
-  //   artistIds = artistIds + this.state.artists[i].id
-  //   artistIds = artistIds + ","
-  // }
-  // var songIds = ""
-  // for(var j = 0; j < 2; j++){
-  //   songIds = songIds + this.state.tracks[j].id
-  //   songIds = songIds + ","
-  // }
+  var seedA = ""
+  for(var i = 0; i < 1; i++){
+    if(this.state.artists[i] !== undefined){
+      seedA = "seed_artists="
+      artistIds = artistIds + this.state.artists[i].id;
+      artistIds = artistIds + ",";
+    }
+  }
+  if(this.state.artists[1] !== undefined){
+    artistIds = artistIds + this.state.artists[1].id
+  }
+  var songIds = ""
+  var seedT = ""
+  for(var j = 0; j < 2; j++){
+    if(this.state.tracks[j] !== undefined){
+      seedT = "&seed_tracks="
+      songIds = songIds + this.state.tracks[j].id
+      songIds = songIds + ","
+    }
+  }
+  if(this.state.tracks[2] !== undefined){
+    songIds = songIds + this.state.tracks[2].id + "&"
+  }
   // sliders are all undefined rn
     var urlEnd = ""
     if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
@@ -165,14 +179,26 @@ getRecs(token){
       var valenceValue = (document.getElementById("valence").value)/100;
       var energyValue = (document.getElementById("energetic").value)/100;
     }
-    urlEnd = urlEnd + "target_loudness=" + loudnessValue + "&target_valence=" + valenceValue + "&target_energy=" + energyValue + "&target_instrumentalness=" + instrumentalnessValue + "&target_danceability=" + danceabiliityValue;
-    console.log(urlEnd)
-    console.log(urlEnd)
+    if(loudnessValue !== undefined){
+      urlEnd = urlEnd + "target_loudness=" + loudnessValue;
+    }
+    if(danceabiliityValue !== undefined){
+      urlEnd = urlEnd + "&target_danceability=" + danceabiliityValue;
+    }
+    if(instrumentalnessValue !== undefined){
+      urlEnd = urlEnd + "&target_instrumentalness=" + instrumentalnessValue;
+    }
+    if(valenceValue !== undefined){
+      urlEnd = urlEnd + "&target_valence=" + valenceValue;
+    }
+    if(energyValue !== undefined){
+      urlEnd = urlEnd + "&target_energy=" + energyValue;
+    }
   $.ajax({
-    url: "https://api.spotify.com/v1/recommendations",
+    url: "https://api.spotify.com/v1/recommendations?limit=20&" + seedA + artistIds + seedT + songIds + urlEnd,
     type: "GET",
     beforeSend: xhr => {
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
+      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
     },
     success: data => {
       // Checks if the data is not empty
@@ -184,11 +210,10 @@ getRecs(token){
       }
 
       this.setState({
-        // tracks: data.items,
+        songsforPlaylist: data.tracks,
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
-
     }
   })
 }
@@ -251,6 +276,7 @@ getRecs(token){
           tempTracks[k].instrumentalness = data.audio_features[k].instrumentalness;
           tempTracks[k].loudness = data.audio_features[k].loudness;
           tempTracks[k].track_href = data.audio_features[k].track_href;
+          tempTracks[k].valence = data.audio_features[k].valence;
         }
        
         this.setState({
@@ -260,33 +286,60 @@ getRecs(token){
         });
       }
     });
-    console.log(this.state.tracks[0]);
   }
 
   sortTracks(){
     var but = document.getElementById("createPlaylist");
     // but.addEventListener("click", this.createPlaylist(this.state.token));
-    // var loudnessValue = (document.getElementById("loudness").value);
-    // var danceabiliityValue = (document.getElementById("danceable").value)/100;
-    // var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
-    // var valenceValue = (document.getElementById("valence").value)/100;
-    // var energyValue = (document.getElementById("energy").value)/100;
+    if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
+      var loudnessValue = (document.getElementById("loudness").value);
+      var danceabiliityValue = (document.getElementById("danceable").value)/100;
+      var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
+      var valenceValue = (document.getElementById("valence").value)/100;
+      var energyValue = (document.getElementById("energetic").value)/100;
+    }
 
     var songs = [];
-    // all these orders are random, need to fix
-    // var uDance = 
-    // var lDance
-    // var uLoud
-    // var lLoud
-    // var uInst
-    // var lInst
-    // var uVal
-    // var lVal
-    // var uEn
-    // var lEn
-    // if()
+    // all these ranges are random, check if they can be fixed
+    if(loudnessValue !== undefined){
+      var uLoud = loudnessValue + 7;
+      var lLoud = loudnessValue - 7;
+    }
+    if(danceabiliityValue !== undefined){
+      var uDance = danceabiliityValue + .05;
+      var lDance = danceabiliityValue - .05;
+    }
+    if(instrumentalnessValue !== undefined){
+      var uInst = instrumentalnessValue + .05;
+      var lInst = instrumentalnessValue - .05;
+    }
+    if(valenceValue !== undefined){
+      var uVal = valenceValue + .05;
+      var lVal = valenceValue - .05;
+    }
+    if(energyValue !== undefined){
+      var uEn = energyValue + .05;
+      var lEn = energyValue - .05;
+    }
 
-
+    for(var i = 0; i < this.state.tracks.length; i++){
+      var temp = this.state.tracks[i];
+      if(temp.loudness > uLoud || temp.loudness <lLoud){
+        this.state.songsforPlaylist.push(this.state.tracks);
+      }
+      else if(temp.danceability > uDance || temp.danceability < lDance){
+        this.state.songsforPlaylist.push(this.state.tracks);
+      }
+      else if(temp.instrumentalness > uInst || temp.instrumentalness < lInst){
+        this.state.songsforPlaylist.push(this.state.tracks);
+      }
+      else if(temp.valence > uVal || temp.valence < lVal){
+        this.state.songsforPlaylist.push(this.state.tracks);
+      }
+      else if(temp.energy > uEn || temp.energy < lEn){
+        this.state.songsforPlaylist.push(this.state.tracks);
+      }
+    }
 
   }
 // function is in progress 
@@ -300,7 +353,6 @@ getRecs(token){
       },
       success: data => {
         // Checks if the data is not empty
-        // console.log("success")
         if(!data) {
           this.setState({
             no_data: true,
