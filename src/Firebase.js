@@ -7,6 +7,7 @@ import "firebase/database";
 const firebaseConfig = {
     apiKey: "AIzaSyA-5cOhNZFmcbMFljt4_UR7-jYJ5lnRvzk",
     authDomain: "cse330-mod7.firebaseapp.com",
+    databaseURL: "https://cse330-mod7-default-rtdb.firebaseio.com",
     projectId: "cse330-mod7",
     storageBucket: "cse330-mod7.appspot.com",
     messagingSenderId: "374442748752",

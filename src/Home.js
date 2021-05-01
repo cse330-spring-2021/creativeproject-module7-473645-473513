@@ -8,6 +8,8 @@ import Playlist from "./Playlist";
 import SignUp from './SignUp.js';
 import SignIn from './SignIn.js';
 import SignOut from './SignOut.js';
+import WritePlaylist from './firebasefunctions/WritePlaylist.js';
+import ReadPlaylists from './firebasefunctions/ReadPlaylists.js';
 
 // create recommendations array of songs for user and then add that to the songsforPlaylists
 
@@ -59,7 +61,7 @@ class Home extends Component {
 
   componentWillUnmount() {
     // clear the interval to save resources
-    clearInterval(this.interval);
+    // clearInterval(this.interval);
   }
 
  
@@ -258,6 +260,7 @@ getRecs(token){
         });
       }
     });
+    console.log(this.state.tracks[0]);
   }
 
   sortTracks(){
@@ -282,6 +285,8 @@ getRecs(token){
     // var uEn
     // var lEn
     // if()
+
+
 
   }
 // function is in progress 
@@ -338,9 +343,17 @@ getRecs(token){
               songsforPlaylist={this.state.songsforPlaylist}
               artists={this.state.artists}
             />
+            <WritePlaylist 
+                tracks={this.state.tracks}
+            />
+            <br />
+            <ReadPlaylists />
             </div>
 
+            
+            
           )}
+
             
           {this.state.no_data && (
             <p>
@@ -349,6 +362,7 @@ getRecs(token){
           )}
         </header>
         <br />
+        
         <SignOut />
       </div>
     );
