@@ -36,6 +36,7 @@ class Home extends Component {
     this.getArtists = this.getArtists.bind(this);
     this.setUser = this.setUser.bind(this);
     this.getRecs = this.getRecs.bind(this);
+    // this.sortTracks = this.sortTracks.bind(this);
   }
 
 
@@ -55,6 +56,7 @@ class Home extends Component {
       this.getArtists(_token);
       this.setUser(_token);
       this.getRecs(_token);
+      
     }
 
   }
@@ -139,13 +141,13 @@ class Home extends Component {
         });
         this.getFeatures();
         this.getArtists(token);
-        this.getRecs();
+        this.getRecs(token);
         this.sortTracks();
       }
     });
   }
 //function that gets user recommendations
-getRecs(){
+getRecs(token){
   var artistIds = "";
   var seedA = ""
   for(var i = 0; i < 1; i++){
@@ -198,7 +200,7 @@ getRecs(){
     url: "https://api.spotify.com/v1/recommendations?limit=20&" + seedA + artistIds + seedT + songIds + urlEnd,
     type: "GET",
     beforeSend: xhr => {
-      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
+      xhr.setRequestHeader("Authorization", "Bearer " + token);
     },
     success: data => {
       // Checks if the data is not empty
@@ -214,6 +216,7 @@ getRecs(){
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
+     
     }
   })
 }
@@ -289,6 +292,7 @@ getRecs(){
   }
 
   sortTracks(){
+    this.getFeatures();
     var but = document.getElementById("createPlaylist");
     // but.addEventListener("click", this.createPlaylist(this.state.token));
     if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
@@ -321,26 +325,23 @@ getRecs(){
       var uEn = energyValue + .05;
       var lEn = energyValue - .05;
     }
-
     for(var i = 0; i < this.state.tracks.length; i++){
-      var temp = this.state.tracks[i];
-      if(temp.loudness > uLoud || temp.loudness <lLoud){
-        this.state.songsforPlaylist.push(this.state.tracks);
+      if(this.state.tracks[i].loudness < uLoud || this.state.tracks[i].loudness > lLoud){
+        songs.push(this.state.tracks[i]);
       }
-      else if(temp.danceability > uDance || temp.danceability < lDance){
-        this.state.songsforPlaylist.push(this.state.tracks);
+      else if(this.state.tracks[i].danceability < uDance || this.state.tracks[i].danceability > lDance){
+        songs.push(this.state.tracks[i]);
       }
-      else if(temp.instrumentalness > uInst || temp.instrumentalness < lInst){
-        this.state.songsforPlaylist.push(this.state.tracks);
+      else if(this.state.tracks[i].instrumentalness < uInst || this.state.tracks[i].instrumentalness > lInst){
+        songs.push(this.state.tracks[i]);
       }
-      else if(temp.valence > uVal || temp.valence < lVal){
-        this.state.songsforPlaylist.push(this.state.tracks);
+      else if(this.state.tracks[i].valence < uVal || this.state.tracks[i].valence > lVal){
+        songs.push(this.state.tracks[i]);
       }
-      else if(temp.energy > uEn || temp.energy < lEn){
-        this.state.songsforPlaylist.push(this.state.tracks);
+      else if(this.state.tracks[i].energy < uEn || this.state.tracks[i].energy > lEn){
+        songs.push(this.state.tracks[i]);
       }
     }
-
   }
 // function is in progress 
 // getting POST errors
