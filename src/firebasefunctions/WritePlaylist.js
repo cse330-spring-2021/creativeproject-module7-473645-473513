@@ -123,9 +123,9 @@ const WritePlaylist = props => {
 
         const recTracks = getRecs(token, props.stateTracks, props.stateArtists);
         recTracks.then(function(result) {
+            console.log(result);
             setTracks(result);
             writeTracks(tracks.tracks);
-            console.log(result);
              // "Stuff worked!"
           }, function(err) {
             console.log(err); // Error: "It broke"
