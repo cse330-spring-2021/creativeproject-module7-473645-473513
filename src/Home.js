@@ -20,7 +20,7 @@ class Home extends Component {
       token: null,
       user_id:"",
       // users first 50 playlists
-      userPlaylists: [{name:""}],
+      userPlaylists: [{name:"", id:""}],
       //users top tracks
       tracks: [{name:"", id:"", album: {images: [{ url: "" }]}, artists: [{ name: "" }], danceability:0, loudness: 0, energy: 0, instrumentalness: 0, valence: 0, track_href: ""}],
       // users top artists
@@ -114,6 +114,7 @@ class Home extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
+        console.log(this.state.userPlaylists)
       }
     });
   }
