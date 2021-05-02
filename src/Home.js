@@ -56,7 +56,7 @@ class Home extends Component {
       this.getArtists(_token);
       this.setUser(_token);
       this.getRecs(_token);
-      
+      this.createPlaylist(_token);
     }
 
   }
@@ -144,7 +144,7 @@ class Home extends Component {
         this.getRecs(token);
         // this.sortTracks();
         var but = document.getElementById("createPlaylist");
-        but.addEventListener("click", this.createPlaylist(this.state.token));
+        but.addEventListener("click", this.createPlaylist(token));
       }
     });
   }
@@ -349,10 +349,11 @@ getRecs(token){
   createPlaylist(token){
     $.ajax({
       url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
-      // type: "POST",
-      beforeSend: xhr => {
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-      },
+      type: "POST",
+      headers:{ "Authorization": "Bearer " + token, "content-type": "application/json" },
+      
+      data: {name: "NP", description:"", public:true}
+      /*
       success: data => {
         // Checks if the data is not empty
         if(!data) {
@@ -365,11 +366,11 @@ getRecs(token){
 
         this.setState({
           // tracks: tempTracks,
-          data: this.state.songsforPlaylist /* We need to "reset" the boolean, in case the
-                            user does not give F5 and has opened his Spotify. */
+          data.name:  // We need to "reset" the boolean, in case the
+                            //user does not give F5 and has opened his Spotify. 
         });
         console.log(data)
-      }
+      }*/
     });
   }
 

@@ -37,7 +37,7 @@ const Playlist = props => {
                 <input type="range" min = "0" max = "100" id="valence" name="musicFeature" defaultValue="50"></input>
                 <label htmlFor="valence">Happiness</label>
             </div>
-            <button id = "createPlaylist" onClick={props.createPlaylist}> Create a Playlist </button>
+            <button id = "createPlaylist"> Create a Playlist </button>
             <ul className = "createdPlaylist"></ul>
             <div className="playlists">
                 {/* <ul>
