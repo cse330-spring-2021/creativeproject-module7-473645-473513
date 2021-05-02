@@ -142,7 +142,9 @@ class Home extends Component {
         this.getFeatures();
         this.getArtists(token);
         this.getRecs(token);
-        this.sortTracks();
+        // this.sortTracks();
+        var but = document.getElementById("createPlaylist");
+        but.addEventListener("click", this.createPlaylist(this.state.token));
       }
     });
   }
@@ -197,7 +199,7 @@ getRecs(token){
       urlEnd = urlEnd + "&target_energy=" + energyValue;
     }
   $.ajax({
-    url: "https://api.spotify.com/v1/recommendations?limit=20&" + seedA + artistIds + seedT + songIds + urlEnd,
+    url: "https://api.spotify.com/v1/recommendations?limit=30&" + seedA + artistIds + seedT + songIds + urlEnd,
     type: "GET",
     beforeSend: xhr => {
       xhr.setRequestHeader("Authorization", "Bearer " + token);
@@ -216,7 +218,6 @@ getRecs(token){
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
-     
     }
   })
 }
@@ -290,11 +291,11 @@ getRecs(token){
       }
     });
   }
-
+// function is obsolete now
+/*
   sortTracks(){
     this.getFeatures();
-    var but = document.getElementById("createPlaylist");
-    // but.addEventListener("click", this.createPlaylist(this.state.token));
+    
     if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
       var loudnessValue = (document.getElementById("loudness").value);
       var danceabiliityValue = (document.getElementById("danceable").value)/100;
@@ -342,7 +343,7 @@ getRecs(token){
         songs.push(this.state.tracks[i]);
       }
     }
-  }
+  }*/
 // function is in progress 
 // getting POST errors
   createPlaylist(token){
@@ -355,18 +356,19 @@ getRecs(token){
       success: data => {
         // Checks if the data is not empty
         if(!data) {
-          this.setState({
-            no_data: true,
-          });
+          // this.setState({
+          //   no_data: true,
+          // });
           return;
         }
         
 
         this.setState({
           // tracks: tempTracks,
-          no_data: false /* We need to "reset" the boolean, in case the
+          data: this.state.songsforPlaylist /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
+        console.log(data)
       }
     });
   }
