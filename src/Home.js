@@ -114,7 +114,7 @@ class Home extends Component {
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        console.log(this.state.userPlaylists)
+        // console.log(this.state.userPlaylists)
       }
     });
   }
@@ -351,9 +351,17 @@ getRecs(token){
     $.ajax({
       url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
       type: "POST",
-      headers:{ "Authorization": "Bearer " + token, "content-type": "application/json" },
-      
-      data: {name: "NP", description:"", public:true}
+      headers:{ 'Authorization': 'Bearer ' + token,
+      'contentType': 'application/json'
+      },
+      data: {name: "NP", description: "", public: false},
+      // json: true,
+      success: function(response){
+        console.log(response);
+      },
+      error: function(){
+        console.log("fail");
+      }
       /*
       success: data => {
         // Checks if the data is not empty
