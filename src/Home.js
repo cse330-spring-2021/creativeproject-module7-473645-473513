@@ -177,12 +177,18 @@ getRecs(token){
   }
   // sliders are all undefined rn
     var urlEnd = ""
+    // console.log(document.getElementById('loudness').value)
+    // console.log(document.getElementById('danceable').value)
+    // console.log(document.getElementById('instrumentalness').value)
+
+
     if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
       var loudnessValue = (document.getElementById("loudness").value);
       var danceabiliityValue = (document.getElementById("danceable").value)/100;
       var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
       var valenceValue = (document.getElementById("valence").value)/100;
       var energyValue = (document.getElementById("energetic").value)/100;
+      console.log(loudnessValue, danceabiliityValue, instrumentalnessValue, valenceValue, energyValue)
     }
     if(loudnessValue !== undefined){
       urlEnd = urlEnd + "target_loudness=" + loudnessValue;
@@ -199,6 +205,7 @@ getRecs(token){
     if(energyValue !== undefined){
       urlEnd = urlEnd + "&target_energy=" + energyValue;
     }
+    console.log(urlEnd)
   $.ajax({
     url: "https://api.spotify.com/v1/recommendations?limit=30&" + seedA + artistIds + seedT + songIds + urlEnd,
     type: "GET",
@@ -214,12 +221,17 @@ getRecs(token){
         return;
       }
 
+      console.log(data.tracks)
+
       this.setState({
         songsforPlaylist: data.tracks,
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
+      console.log(this.state.songsforPlaylist)
+
     }
+
   })
 }
 
@@ -245,6 +257,7 @@ getRecs(token){
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
+        console.log(this.state.artists);
       }
     });
   }
@@ -347,21 +360,37 @@ getRecs(token){
   }*/
 // function is in progress 
 // getting POST errors
+
+// commenting this out for now so i don't get a ton of spotify playlists on my acct
+
   createPlaylist(token){
-    $.ajax({
-      url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
-      type: "POST",
-      headers:{ 'Authorization': 'Bearer ' + token,
-      'contentType': 'application/json'
-      },
-      data: {name: "NP", description: "", public: false},
-      // json: true,
-      success: function(response){
-        console.log(response);
-      },
-      error: function(){
-        console.log("fail");
-      }
+      console.log('create playlist')
+      let playlistName = 'random'
+    // $.ajax({
+    //   url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
+    //   type: "POST",
+    //   data: JSON.stringify({name: playlistName, public: false}),
+    //   dataType: 'json',
+    //   headers: { 'Authorization': 'Bearer ' + token},
+    //   contentType: 'application/json',
+
+    //     //   data: {name: "NP", description: "", public: false},
+    //   // json: true,
+    //   success: function(response){
+    //     console.log(response);
+    //     console.log('sucess!')
+    //   },
+    //   error: function(response){
+    //     console.log(response)
+    //     console.log('nope!');
+    //   }
+
+    // });
+    }
+
+      // commenting out ends here
+
+
       /*
       success: data => {
         // Checks if the data is not empty
@@ -380,8 +409,7 @@ getRecs(token){
         });
         console.log(data)
       }*/
-    });
-  }
+
 
   render() {
     return (
@@ -409,7 +437,10 @@ getRecs(token){
               artists={this.state.artists}
             />
             <WritePlaylist 
-                tracks={this.state.tracks}
+                stateTracks={this.state.tracks}
+                // tracks={this.state.songsforPlaylist}
+                token={this.state.token}
+                stateArtists={this.state.artists}
             />
             <br />
             <ReadPlaylists />

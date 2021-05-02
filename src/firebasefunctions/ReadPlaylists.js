@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, database, provider } from '../Firebase.js';
+import "./FirebaseFunctions.css";
+
 
 
 function ReadPlaylists(props) {
@@ -64,18 +66,31 @@ function ReadPlaylists(props) {
     const showSongs = e => {
         let parentUl = e.target.parentElement;
         for (var l=0; l<playlists.length; l++){
-            console.log(playlists[l].name, parentUl.id)
             if (playlists[l].name === parentUl.id){
                 let songsToShow = playlists[l].songs;
 
                 for (const obj in songsToShow){
-                    let showAlbum = songsToShow[obj].album
-                    let showArtist = songsToShow[obj].artist
-                    let showName = songsToShow[obj].song
-                    console.log(showAlbum, showArtist, showName)
+                    let showAlbum = songsToShow[obj].album;
+                    let showArtist = songsToShow[obj].artist;
+                    let showName = songsToShow[obj].song;
+                    let imageUrl = songsToShow[obj].imageUrl;
+                    let spotifyUrl = songsToShow[obj].spotifyUrl;
+
 
                     let li = document.createElement('li');
-                    li.innerHTML = showName + ', ' + showArtist + ' - ' + showAlbum;
+
+                    let img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.className += 'albumCovers';
+                    
+                    let link = document.createElement('a');
+                    link.href = spotifyUrl;
+                    link.innerHTML = showName + ', ' + showArtist + ' - ' + showAlbum;
+
+                    let div = document.createElement('div');
+                    parentUl.appendChild(img)
+                    // li.innerHTML = link + ', ' + showArtist + ' - ' + showAlbum;
+                    li.appendChild(link)
                     parentUl.appendChild(li);
 
 
