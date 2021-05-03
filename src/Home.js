@@ -36,7 +36,7 @@ class Home extends Component {
     this.getArtists = this.getArtists.bind(this);
     this.setUser = this.setUser.bind(this);
     this.getRecs = this.getRecs.bind(this);
-    this.addSongstoPlaylist = this.addSongstoPlaylist.bind(this);
+    // this.addSongstoPlaylist = this.addSongstoPlaylist.bind(this);
     // this.createPlaylist = this.createPlaylist.bind(this);
     this.tick = this.tick.bind(this);
     // this.sortTracks = this.sortTracks.bind(this);
@@ -155,12 +155,7 @@ class Home extends Component {
                             user does not give F5 and has opened his Spotify. */
         });
         this.getFeatures();
-        // this.getArtists(token);
-        // this.getRecs(token);
-        // this.getPlaylists(token);
-        // this.sortTracks();
-        // var but = document.getElementById("createPlaylist");
-        // but.addEventListener("click", this.createPlaylist(token));
+        
       }
     });
   }
@@ -316,6 +311,65 @@ getRecs(token){
       }
     });
   }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          {!this.state.token && (
+            <a
+              className="btn btn--loginApp-link"
+              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                "%20"
+              )}&response_type=token&show_dialog=true`}
+            >
+              Login to Spotify
+            </a>
+          )}
+          {this.state.token && !this.state.no_data && (
+            <div id = "playlists">
+            <Playlist
+              userPlaylists={this.state.userPlaylists}
+              tracks={this.state.tracks}
+              // createPlaylist={this.state.createPlaylist}
+              token={this.state.token}
+              songsforPlaylist={this.state.songsforPlaylist}
+              artists={this.state.artists}
+            />
+            <WritePlaylist 
+                stateTracks={this.state.tracks}
+                // tracks={this.state.songsforPlaylist}
+                token={this.state.token}
+                stateArtists={this.state.artists}
+                user_id={this.state.user_id}
+                userPlaylists={this.state.userPlaylists}
+
+            />
+            <br />
+            {/* <ReadPlaylists /> */}
+            </div>
+
+            
+            
+          )}
+
+            
+          {this.state.no_data && (
+            <p>
+              You need to be playing a song on Spotify, for something to appear here.
+            </p>
+          )}
+        </header>
+        <br />
+        
+        <SignOut />
+      </div>
+    );
+  }
+}
+export default Home;
+
 // function is obsolete now
 /*
   sortTracks(){
@@ -400,117 +454,59 @@ getRecs(token){
   //   this.addSongstoPlaylist(token);
   //   }
 
-    addSongstoPlaylist(token){
-      // console.log(this.state.userPlaylists)
-      // console.log(this.state.songsforPlaylist)
-      // var playlistId = this.state.userPlaylists[0].id;
-      // console.log(playlistId)
-      // var uris = "uris="
-      // for(var i = 0; i < this.state.songsforPlaylist.length; i++){
-      //   uris = uris + "spotify:track:"
-      //   uris = uris + this.state.songsforPlaylist[i].id
-      //   uris = uris + ','
-      // }
-      // var finaluri = uris.slice(0, -1)
-      // $.ajax({
-      //   url: "https://api.spotify.com/v1/playlists/"+ playlistId +"/tracks?" + finaluri,
-      //   type: "POST",
-      //   // data: JSON.stringify({name: playlistName, public: false}),
-      //   dataType: 'text',
-      //   headers: { 'Authorization': 'Bearer ' + token},
-      //   contentType: 'application/json',
-  
-      //     //   data: {name: "NP", description: "", public: false},
-      //   // json: true,
-      //   success: function(response){
-      //     console.log(response);
-      //     console.log('sucess!');
-      //   },
-      //   error: function(response){
-      //     console.log(response)
-      //     console.log('nope!');
-      //   }
-  
-      // });
-    }
+  /*addSongstoPlaylist(token){
+    // console.log(this.state.userPlaylists)
+    // console.log(this.state.songsforPlaylist)
+    // var playlistId = this.state.userPlaylists[0].id;
+    // console.log(playlistId)
+    // var uris = "uris="
+    // for(var i = 0; i < this.state.songsforPlaylist.length; i++){
+    //   uris = uris + "spotify:track:"
+    //   uris = uris + this.state.songsforPlaylist[i].id
+    //   uris = uris + ','
+    // }
+    // var finaluri = uris.slice(0, -1)
+    // $.ajax({
+    //   url: "https://api.spotify.com/v1/playlists/"+ playlistId +"/tracks?" + finaluri,
+    //   type: "POST",
+    //   // data: JSON.stringify({name: playlistName, public: false}),
+    //   dataType: 'text',
+    //   headers: { 'Authorization': 'Bearer ' + token},
+    //   contentType: 'application/json',
 
-      // commenting out ends here
+    //     //   data: {name: "NP", description: "", public: false},
+    //   // json: true,
+    //   success: function(response){
+    //     console.log(response);
+    //     console.log('sucess!');
+    //   },
+    //   error: function(response){
+    //     console.log(response)
+    //     console.log('nope!');
+    //   }
 
-
-      /*
-      success: data => {
-        // Checks if the data is not empty
-        if(!data) {
-          // this.setState({
-          //   no_data: true,
-          // });
-          return;
-        }
-        
-
-        this.setState({
-          // tracks: tempTracks,
-          data.name:  // We need to "reset" the boolean, in case the
-                            //user does not give F5 and has opened his Spotify. 
-        });
-        console.log(data)
-      }*/
-
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          {!this.state.token && (
-            <a
-              className="btn btn--loginApp-link"
-              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                "%20"
-              )}&response_type=token&show_dialog=true`}
-            >
-              Login to Spotify
-            </a>
-          )}
-          {this.state.token && !this.state.no_data && (
-            <div id = "playlists">
-            <Playlist
-              userPlaylists={this.state.userPlaylists}
-              tracks={this.state.tracks}
-              // createPlaylist={this.state.createPlaylist}
-              token={this.state.token}
-              songsforPlaylist={this.state.songsforPlaylist}
-              artists={this.state.artists}
-            />
-            <WritePlaylist 
-                stateTracks={this.state.tracks}
-                // tracks={this.state.songsforPlaylist}
-                token={this.state.token}
-                stateArtists={this.state.artists}
-                user_id={this.state.user_id}
-                userPlaylists={this.state.userPlaylists}
-
-            />
-            <br />
-            {/* <ReadPlaylists /> */}
-            </div>
-
-            
-            
-          )}
-
-            
-          {this.state.no_data && (
-            <p>
-              You need to be playing a song on Spotify, for something to appear here.
-            </p>
-          )}
-        </header>
-        <br />
-        
-        <SignOut />
-      </div>
-    );
+    // });
   }
-}
-export default Home;
+
+    // commenting out ends here
+
+
+    /*
+    success: data => {
+      // Checks if the data is not empty
+      if(!data) {
+        // this.setState({
+        //   no_data: true,
+        // });
+        return;
+      }
+      
+
+      this.setState({
+        // tracks: tempTracks,
+        data.name:  // We need to "reset" the boolean, in case the
+                          //user does not give F5 and has opened his Spotify. 
+      });
+      console.log(data)
+    }*/
+

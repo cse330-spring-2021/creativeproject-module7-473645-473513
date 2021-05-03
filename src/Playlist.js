@@ -2,24 +2,7 @@ import React from "react";
 import "./Playlist.css";
 
 const Playlist = props => {
-    const playlists = []
-    for(var i = 0; i < props.userPlaylists.length; i++){
-        playlists.push(<p key={props.userPlaylists[i].id}>{props.userPlaylists[i].name}</p>)
-       
-    }
-    // const topTracks = []
-    // for(var j = 0; j < props.tracks.length; j++){
-    //     topTracks.push(props.tracks[j].id)
-    // }
-    // const newPlaylist = []
-    // for(var k = 0; k < props.songsforPlaylist.length; k++){
-    //     newPlaylist.push(<a key = {props.songsforPlaylist[k].id} href={props.songsforPlaylist[k].track_href}>{props.songsforPlaylist[k].name}</a>)
-    //     newPlaylist.push(<br></br>)
-    // }
-    // const createdPlaylist = []
-    // for(var k = 0; k < props.createdPlaylist.length; k++){
 
-    // }
     
     return (
         <div className="App">
@@ -40,9 +23,7 @@ const Playlist = props => {
             {/* <button id = "createPlaylist"> Create a Playlist </button> */}
             <ul className = "createdPlaylist"></ul>
             <div className="playlists">
-                {/* <ul>
-                     {playlists}
-                </ul> */}
+                
             </div>
           </div>
         </div>
