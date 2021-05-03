@@ -99,17 +99,151 @@ async function getRecs(token, stateTracks, stateArtists) {
     return(recPlaylist)
 }
 
+
+
 const WritePlaylist = props => {
     const [title, setTitle] = useState("");
-    const [tracks, setTracks] = useState("");
+    const [tracks, setTracks] = useState([]);
+    const [fbPlaylists, setfbPlaylists] = useState([]);
+    const [start, setStart] = useState(0)
+    const [counter, setCounter] = useState(0);
     const userId = auth.currentUser.uid;
     const token = props.token;
     const propsTracks = props.tracks;
+    let playlistDivs = [];
+
     // console.log(props)
 
     // const playlistTracks = props.getRecs(token);
 
     // console.log(tracks)
+    useEffect(() => {
+
+        function getPlaylists() {
+            let playlistArr = []
+            database.ref('/user_' + userId).once('value', (snapshot) => {
+                snapshot.forEach((snap) => {
+                    let playlistName = snap.key;
+                    let playlistSongs = snap.val();
+                    let playlist = {
+                        name: playlistName,
+                        songs: playlistSongs
+                    }
+                    playlistArr.push(playlist);
+                });
+            });
+            setfbPlaylists(playlistArr)
+        }
+
+        getPlaylists();
+        // displayPlaylists(); 
+    }, [start]);
+    // setStart(start+1);
+
+
+
+    function setPlaylistDivs() {
+
+
+        playlistDivs = [];
+        let songLis = [];
+        // const playlists2 = playlists;
+        let here = document.getElementById('showPlaylistsHere');
+        for (var i=0; i< fbPlaylists.length; i++){
+            // console.log('running')
+            let pName = fbPlaylists[i].name;
+            let pSongs = fbPlaylists[i].songs;
+            // console.log(pSongs)
+
+            playlistDivs.push(<ul id={pName}>{pName} <button value={pName} onClick={e => showSongs(e)}>Show Songs</button></ul>)
+            // for (var k=0; k<pSongs.length; k++){
+            
+            //     console.log(pSongs[k].val());
+            // }
+
+        }
+
+    }
+    setPlaylistDivs();
+
+
+    const showSongs = e => {
+        let parentUl = e.target.parentElement;
+
+        if (e.target.innerHTML == 'Show Songs'){
+            for (var l=0; l<fbPlaylists.length; l++){
+                if (fbPlaylists[l].name === parentUl.id){
+                    let songsToShow = fbPlaylists[l].songs;
+    
+                    for (const obj in songsToShow){
+                        let showAlbum = songsToShow[obj].album;
+                        let showArtist = songsToShow[obj].artist;
+                        let showName = songsToShow[obj].song;
+                        let imageUrl = songsToShow[obj].imageUrl;
+                        let spotifyUrl = songsToShow[obj].spotifyUrl;
+                        let songId = songsToShow[obj].songId;
+    
+    
+                        let li = document.createElement('li');
+                        li.id += songId;
+
+                        
+    
+                        let img = document.createElement('img');
+                        img.src = imageUrl;
+                        img.className += 'albumCovers';
+
+
+                        
+                        
+                        let link = document.createElement('a');
+                        link.href = spotifyUrl;
+                        link.innerHTML = showName + ', ' + showArtist + ' - ' + showAlbum;
+
+                        let span = document.createElement('span');
+                        span.innerHTML = '< + link';
+
+                        let btn = document.createElement('button');
+                        btn.addEventListener('click', deleteSong);
+                        btn.innerHTML = 'Remove'
+                        btn.className += 'deleteSong'
+    
+                        li.appendChild(img)
+                        // li.innerHTML = link + ', ' + showArtist + ' - ' + showAlbum;
+                        li.appendChild(link)
+                        li.append(btn);
+                        parentUl.appendChild(li);
+    
+    
+                    }
+                }
+            }
+            e.target.innerHTML = 'Hide Songs'
+        }
+        else if (e.target.innerHTML = 'Hide Songs'){
+            for (var i=parentUl.childNodes.length; i>3; i--){
+                parentUl.removeChild(parentUl.lastChild);
+            }
+
+            e.target.innerHTML = 'Show Songs'
+
+        }
+
+        
+    }
+
+    const deleteSong = e => {
+        e.preventDefault();
+        console.log(e.target.parentElement.parentElement);
+        const delSongId = e.target.parentElement.id
+        const delPlayId = e.target.parentElement.parentElement.id
+
+        database.ref('/user_' + userId + '/' + delPlayId + '/song_' + delSongId).remove();
+
+        e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+
+
+    }
 
 
 
@@ -118,14 +252,25 @@ const WritePlaylist = props => {
     const writeToFire = e => {
         e.preventDefault();
 
-        setTitle(e.target.title.value)
+        // setTitle(e.target.title.value)
         
 
         const recTracks = getRecs(token, props.stateTracks, props.stateArtists);
+        console.log(recTracks);
         recTracks.then(function(result) {
-            console.log(result);
             setTracks(result);
-            writeTracks(tracks.tracks);
+            writeTracks(result.tracks);
+
+
+            console.log(fbPlaylists)
+            console.log(result.tracks);
+            // setfbPlaylists([...fbPlaylists, result.tracks]);
+            setStart(start+1);
+            console.log(fbPlaylists)
+            // setTitle('');
+
+            // setPlaylistDivs();
+
              // "Stuff worked!"
           }, function(err) {
             console.log(err); // Error: "It broke"
@@ -154,14 +299,15 @@ const WritePlaylist = props => {
                     song: song,
                     album: album,
                     imageUrl: image,
-                    spotifyUrl: spotifyUrl
+                    spotifyUrl: spotifyUrl,
+                    songId: songId,
     
                 })
     
             }
 
         }
-
+        setTitle('');
 
     }
 
@@ -189,12 +335,17 @@ const WritePlaylist = props => {
                 type='text' 
                 name='title' 
                 placeholder='Playlist Title' 
+                id='playlistTitle'
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 />
                 <input type='submit' value='Save Playlist'/>
             </form>
             <button onClick={readFromFire}>Read Playlists</button>
+            <div id='showPlaylistsHere'>
+                {playlistDivs}
+
+            </div>
         </div>
     )
 }

@@ -489,7 +489,7 @@ getRecs(token){
                 stateArtists={this.state.artists}
             />
             <br />
-            <ReadPlaylists />
+            {/* <ReadPlaylists /> */}
             </div>
 
             

@@ -25,8 +25,10 @@ const Playlist = props => {
         <div className="App">
           <div className="main-wrapper">
             <div className="playlistFunctions">
-                <input type="range" min = "0" max = "100" id="danceable" name="musicFeature" defaultValue="50"></input>
-                <label htmlFor="danceable">Danceability</label>
+              <div>
+                <label htmlFor="danceable">Danceability <br/><input type="range" min = "0" max = "100" id="danceable" name="musicFeature" defaultValue="50"></input>
+                </label>
+              </div>
                 <input type="range" min = "0" max = "100" id="energetic" name="musicFeature" defaultValue="50"></input>
                 <label htmlFor="energetic">Energy</label>
                 {/* remember its the reverse of values for instrumentalness */}
