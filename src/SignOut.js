@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { auth, database, provider } from './Firebase.js';
+import './loginfunctions.css'
 
 function SignOut() {
     // const [email, setEmail] = useState("");
@@ -11,13 +12,14 @@ function SignOut() {
             console.log('Signed Out')
         }).catch((error) => {
             setErrors(error.message);
+            alert(error)
         });
     };
 
     return(
         <div>
-            <button onClick={sendHome}>Sign Out</button>
-            <span>{error}</span>
+            <button className='signOutBtn' onClick={sendHome}>Sign Out</button>
+            {/* <span>{error}</span> */}
         </div>
 
     )

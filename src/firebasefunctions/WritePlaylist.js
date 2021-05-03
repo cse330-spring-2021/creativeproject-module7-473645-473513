@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, database, provider } from '../Firebase.js';
 import * as $ from "jquery";
+import './FirebaseFunctions.css';
 
 
 async function getRecsAjax(seedA, artistIds, seedT, songIds, urlEnd, token) {
@@ -107,19 +108,15 @@ const WritePlaylist = props => {
     const [tracks, setTracks] = useState([]);
     const [fbPlaylists, setfbPlaylists] = useState([]);
     const [start, setStart] = useState(0)
-    const [counter, setCounter] = useState(0);
+    // const [counter, setCounter] = useState(0);
     const userId = auth.currentUser.uid;
     const token = props.token;
-    const propsTracks = props.tracks;
+    // const propsTracks = props.tracks;
     const user_id = props.user_id;
     const userPlaylists = props.userPlaylists;
     let playlistDivs = [];
 
-    // console.log(props)
-
-    // const playlistTracks = props.getRecs(token);
-
-    // console.log(tracks)
+ 
     useEffect(() => {
 
         function getPlaylists() {
@@ -139,31 +136,19 @@ const WritePlaylist = props => {
         }
 
         getPlaylists();
-        // displayPlaylists(); 
     }, [start]);
-    // setStart(start+1);
 
 
 
     function setPlaylistDivs() {
-
-
         playlistDivs = [];
         let songLis = [];
-        // const playlists2 = playlists;
         let here = document.getElementById('showPlaylistsHere');
         for (var i=0; i< fbPlaylists.length; i++){
-            // console.log('running')
             let pName = fbPlaylists[i].name;
-            let pSongs = fbPlaylists[i].songs;
-            // console.log(pSongs)
+            // let pSongs = fbPlaylists[i].songs;
 
-            playlistDivs.push(<ul id={pName}>{pName} <button value={pName} onClick={e => showSongs(e)}>Show Songs</button><button onClick={e => createPlaylist(e)}>Save to Spotify</button></ul>)
-            // for (var k=0; k<pSongs.length; k++){
-            
-            //     console.log(pSongs[k].val());
-            // }
-
+            playlistDivs.push(<ul id={pName} className="playlistsHere">{pName} <button className='ulbutton' value={pName} onClick={e => showSongs(e)}>Show Songs</button><button className='ulbutton' onClick={e => createPlaylist(e)}>Save to Spotify</button></ul>)
         }
 
     }
@@ -202,6 +187,7 @@ const WritePlaylist = props => {
                         let link = document.createElement('a');
                         link.href = spotifyUrl;
                         link.innerHTML = showName + ', ' + showArtist + ' - ' + showAlbum;
+                        link.className += 'songLinks';
 
                         let span = document.createElement('span');
                         span.innerHTML = '< + link';
@@ -214,7 +200,6 @@ const WritePlaylist = props => {
 
     
                         li.appendChild(img)
-                        // li.innerHTML = link + ', ' + showArtist + ' - ' + showAlbum;
                         li.appendChild(link)
                         li.append(btn1);
                         parentUl.appendChild(li);
@@ -242,33 +227,32 @@ const WritePlaylist = props => {
         const delSongId = e.target.parentElement.id
         const delPlayId = e.target.parentElement.parentElement.id
 
+
+        // deleting song from firebase
         database.ref('/user_' + userId + '/' + delPlayId + '/song_' + delSongId).remove();
 
+
+        // deleting song from the screen
         e.target.parentElement.parentElement.removeChild(e.target.parentElement);
 
-        // function looping(){
-            for (var i=0; i<fbPlaylists.length; i++){
-                if (fbPlaylists[i].name === delPlayId){
-                    let checkSongs = fbPlaylists[i].songs;
-                    for (const obj in fbPlaylists[i].songs){
-                        console.log(fbPlaylists[i].songs[obj])
-                        if (fbPlaylists[i].songs[obj].songId === delSongId){
-                            delete fbPlaylists[i].songs[obj];
-                            break;                        
-                        }
+
+        // deleting song from the local array of that playlist (so you don't have to reload for it to disappear)
+        for (var i=0; i<fbPlaylists.length; i++){
+            if (fbPlaylists[i].name === delPlayId){
+                let checkSongs = fbPlaylists[i].songs;
+                for (const obj in fbPlaylists[i].songs){
+                    console.log(fbPlaylists[i].songs[obj])
+                    if (fbPlaylists[i].songs[obj].songId === delSongId){
+                        delete fbPlaylists[i].songs[obj];
+                        break;                        
                     }
                 }
             }
-
-        // }
-
-        
-
+        }
 
     }
 
     const createPlaylist = e => {
-        // console.log(e.target.parentElement)
         let playlistName = e.target.parentElement.id
       $.ajax({
         url: "https://api.spotify.com/v1/users/"+ user_id +"/playlists",
@@ -304,7 +288,6 @@ const WritePlaylist = props => {
             }
         }
 
-        // var playlistId = userPlaylists[0].id;
         var uris = "uris="
         for (const obj in songsForPlaylist){
             uris = uris + "spotify:track:"
@@ -340,10 +323,7 @@ const WritePlaylist = props => {
     
 
     const writeToFire = e => {
-        e.preventDefault();
-
-        // setTitle(e.target.title.value)
-        
+        e.preventDefault();        
 
         const recTracks = getRecs(token, props.stateTracks, props.stateArtists);
         console.log(recTracks);
@@ -354,21 +334,15 @@ const WritePlaylist = props => {
 
             console.log(fbPlaylists)
             console.log(result.tracks);
-            // setfbPlaylists([...fbPlaylists, result.tracks]);
             setStart(start+1);
             console.log(fbPlaylists)
-            // setTitle('');
 
-            // setPlaylistDivs();
 
-             // "Stuff worked!"
           }, function(err) {
-            console.log(err); // Error: "It broke"
+            console.log(err);
           });
         console.log(tracks);
-        // database.ref('/playlists_' + userId).set({
-        //     title: title
-        // })
+
 
         function writeTracks(tracks) {
             console.log(tracks)
@@ -380,10 +354,7 @@ const WritePlaylist = props => {
                 let image = tracks[i].album.images[0].url;
                 let spotifyUrl = tracks[i].external_urls.spotify;
                 let playlistTitle = title;
-    
-    
-                // console.log(artist, song, album)
-    
+        
                 database.ref('/user_' + userId + '/' + playlistTitle + '/song_' + songId).set({
                     artist: artist,
                     song: song,
@@ -403,6 +374,7 @@ const WritePlaylist = props => {
 
 
 
+    // legacy function - used for debugging
     function readFromFire() {
         let playlists = []
         database.ref('/user_' + userId).once('value', (snapshot) => {
@@ -424,6 +396,7 @@ const WritePlaylist = props => {
         <div>
             <form onSubmit={e => writeToFire(e)} >
                 <input 
+                className='titleInput'
                 type='text' 
                 name='title' 
                 placeholder='Playlist Title' 
@@ -431,12 +404,16 @@ const WritePlaylist = props => {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 />
-                <input type='submit' value='Save Playlist'/>
+                <input id='generateBtn' type='submit' value='Generate Playlist'/>
             </form>
-            <button onClick={readFromFire}>Read Playlists</button>
+            {/* <button onClick={readFromFire}>Read Playlists</button> */}
+            <h2 id='playlistSecTitle'>Your Playlists</h2>
             <div id='showPlaylistsHere'>
                 {playlistDivs}
 
+            </div>
+            <div className='bottom'>
+                <p className='made'>Made with Spotify Web API</p>
             </div>
         </div>
     )

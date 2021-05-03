@@ -3,3 +3,89 @@
     height: 60px;
 
 }
+
+.playlistsHere {
+    margin-top: 5%;
+
+}
+
+.playlistsHere li {
+    list-style-type: none;
+    display: block;
+    margin-top: 20px;
+    /* height: 100px;
+    line-height: 100px; */
+}
+
+.playlistsHere li img {
+    vertical-align: middle;
+    margin-right: 2%;
+}
+
+.deleteSong {
+    margin-left: 2%;
+    background-color: lightgray;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: 500ms;
+}
+
+.deleteSong:hover {
+    background-color: red;
+    color: white;
+}
+
+.ulbutton {
+    margin-left: 2%;
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: 500ms;
+}
+.ulbutton:hover {
+    background-color: green;
+}
+
+.songLinks {
+    color: black;
+    text-decoration: none;
+}
+
+.songLinks:hover {
+    text-decoration: underline;
+    color: #1DB954;
+}
+
+#generateBtn {
+    background-color: white;
+    color: black;
+    border: solid 1px black;
+    border-radius: 5px;
+    padding: 10px 20px;
+    transition: 500ms;
+}
+
+#generateBtn:hover {
+    color: #1DB954;
+    border: solid 1px #1DB954;
+}
+
+.titleInput {
+    padding: 12px 20px;
+    width: 25%;
+    border: solid 1px gray;
+    border-radius: 5px;
+    margin-top: 5px
+}
+
+.titleInput:focus {
+    outline: none;
+}
+
+.bottom {
+    text-align: center;
+    margin-top: 10%
+}

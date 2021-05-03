@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { auth, database, provider } from './Firebase.js';
+import './loginfunctions.css'
+
 
 
 function SignUp() {
@@ -16,6 +18,7 @@ function SignUp() {
           })
           .catch(e => {
             setErrors(e.message);
+            alert(error);
           });
 
           console.log(e.target.email.value);
@@ -28,9 +31,11 @@ function SignUp() {
 
     return (
         <div>
-        <h3>Sign Up:</h3>
+        <h3 className='signinup'>Sign Up:</h3>
         <form onSubmit={e => handleSubmit(e)}>
+          <div className='formDiv'>
             <input
+                className='signInput'
                 value={email}
                 type='email'
                 name='email'
@@ -38,14 +43,16 @@ function SignUp() {
                 placeholder='email'
             />     
             <input
+                className='signInput'
                 value={password}
                 type='password'
                 name='password'
                 onChange={e => setPassword(e.target.value)}
                 placeholder='password'
-            />     
-            <input type="submit" value="Submit" />
-            <span>{error}</span>
+            /> 
+            </div> <br/>    
+            <input className='signButtons' type="submit" value="Submit" />
+            {/* <span>{error}</span> */}
 
         </form>
         </div>

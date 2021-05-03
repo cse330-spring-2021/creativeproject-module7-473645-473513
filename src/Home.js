@@ -313,14 +313,19 @@ getRecs(token){
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           {!this.state.token && (
-            <a
-              className="btn btn--loginApp-link"
-              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                "%20"
-              )}&response_type=token&show_dialog=true`}
-            >
-              Login to Spotify
-            </a>
+            <div>
+              <a
+                className="btn btn--loginApp-link"
+                href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                  "%20"
+                )}&response_type=token&show_dialog=true`}
+              >
+                Login to Spotify
+              </a>
+              <SignOut />
+            </div>
+
+            
           )}
           {this.state.token && !this.state.no_data && (
             <div id = "playlists">
@@ -343,6 +348,8 @@ getRecs(token){
             />
             <br />
             {/* <ReadPlaylists /> */}
+            <SignOut />
+
             </div>
 
             
@@ -358,7 +365,6 @@ getRecs(token){
         </header>
         <br />
         
-        <SignOut />
       </div>
     );
   }
