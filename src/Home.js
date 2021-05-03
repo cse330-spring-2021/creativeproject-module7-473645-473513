@@ -365,6 +365,9 @@ getRecs(token){
 }
 export default Home;
 
+// OLD FUNCTIONS NOT IN USE, BUT THE CODE COULD BE USEFUL, SO I WANT TO KEEP
+
+
 // function is obsolete now
 /*
   sortTracks(){
