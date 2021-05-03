@@ -37,7 +37,7 @@ class Home extends Component {
     this.setUser = this.setUser.bind(this);
     this.getRecs = this.getRecs.bind(this);
     this.addSongstoPlaylist = this.addSongstoPlaylist.bind(this);
-    this.createPlaylist = this.createPlaylist.bind(this);
+    // this.createPlaylist = this.createPlaylist.bind(this);
     this.tick = this.tick.bind(this);
     // this.sortTracks = this.sortTracks.bind(this);
   }
@@ -62,7 +62,7 @@ class Home extends Component {
       // this.createPlaylist(_token);
     }
 
-    this.interval = setInterval(() => this.tick(), 10000);
+    this.interval = setInterval(() => this.tick(), 1000);
 
   }
 
@@ -159,8 +159,8 @@ class Home extends Component {
         // this.getRecs(token);
         // this.getPlaylists(token);
         // this.sortTracks();
-        var but = document.getElementById("createPlaylist");
-        but.addEventListener("click", this.createPlaylist(token));
+        // var but = document.getElementById("createPlaylist");
+        // but.addEventListener("click", this.createPlaylist(token));
       }
     });
   }
@@ -199,7 +199,7 @@ getRecs(token){
       var instrumentalnessValue = (document.getElementById("instrumentalness").value)/100;
       var valenceValue = (document.getElementById("valence").value)/100;
       var energyValue = (document.getElementById("energetic").value)/100;
-      console.log(loudnessValue, danceabiliityValue, instrumentalnessValue, valenceValue, energyValue)
+      // console.log(loudnessValue, danceabiliityValue, instrumentalnessValue, valenceValue, energyValue)
     }
     if(loudnessValue !== undefined){
       urlEnd = urlEnd + "target_loudness=" + loudnessValue;
@@ -216,7 +216,7 @@ getRecs(token){
     if(energyValue !== undefined){
       urlEnd = urlEnd + "&target_energy=" + energyValue;
     }
-    console.log(urlEnd)
+    // console.log(urlEnd)
   $.ajax({
     url: "https://api.spotify.com/v1/recommendations?limit=30&" + seedA + artistIds + seedT + songIds + urlEnd,
     type: "GET",
@@ -374,31 +374,31 @@ getRecs(token){
 
 // commenting this out for now so i don't get a ton of spotify playlists on my acct
 
-  createPlaylist(token){
-      console.log('create playlist')
-      let playlistName = 'random'
-    // $.ajax({
-    //   url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
-    //   type: "POST",
-    //   data: JSON.stringify({name: playlistName, public: false}),
-    //   dataType: 'json',
-    //   headers: { 'Authorization': 'Bearer ' + token},
-    //   contentType: 'application/json',
+  // createPlaylist(token){
+  //     console.log('create playlist')
+  //     let playlistName = 'random'
+  //   // $.ajax({
+  //   //   url: "https://api.spotify.com/v1/users/"+ this.state.user_id +"/playlists",
+  //   //   type: "POST",
+  //   //   data: JSON.stringify({name: playlistName, public: false}),
+  //   //   dataType: 'json',
+  //   //   headers: { 'Authorization': 'Bearer ' + token},
+  //   //   contentType: 'application/json',
 
-    //     //   data: {name: "NP", description: "", public: false},
-    //   // json: true,
-    //   success: function(response){
-    //     console.log(response);
-    //     console.log('sucess!');
-    //   },
-    //   error: function(response){
-    //     console.log(response)
-    //     console.log('nope!');
-    //   }
+  //   //     //   data: {name: "NP", description: "", public: false},
+  //   //   // json: true,
+  //   //   success: function(response){
+  //   //     console.log(response);
+  //   //     console.log('sucess!');
+  //   //   },
+  //   //   error: function(response){
+  //   //     console.log(response)
+  //   //     console.log('nope!');
+  //   //   }
 
-    // });
-    this.addSongstoPlaylist(token);
-    }
+  //   // });
+  //   this.addSongstoPlaylist(token);
+  //   }
 
     addSongstoPlaylist(token){
       // console.log(this.state.userPlaylists)
@@ -477,7 +477,7 @@ getRecs(token){
             <Playlist
               userPlaylists={this.state.userPlaylists}
               tracks={this.state.tracks}
-              createPlaylist={this.state.createPlaylist}
+              // createPlaylist={this.state.createPlaylist}
               token={this.state.token}
               songsforPlaylist={this.state.songsforPlaylist}
               artists={this.state.artists}
