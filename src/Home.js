@@ -55,7 +55,6 @@ class Home extends Component {
       });
       this.getPlaylists(_token);
       this.getTracks(_token);
-      // this.getFeatures(_token, null, null);
       this.getArtists(_token);
       this.setUser(_token);
       this.getRecs(_token);
@@ -227,14 +226,11 @@ getRecs(token){
         return;
       }
 
-      // console.log(data.tracks)
-
       this.setState({
         songsforPlaylist: data.tracks,
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
-      // console.log(this.state.songsforPlaylist)
 
     }
 
@@ -263,7 +259,6 @@ getRecs(token){
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        // console.log(this.state.artists);
       }
     });
   }
