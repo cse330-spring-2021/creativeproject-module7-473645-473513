@@ -487,6 +487,9 @@ getRecs(token){
                 // tracks={this.state.songsforPlaylist}
                 token={this.state.token}
                 stateArtists={this.state.artists}
+                user_id={this.state.user_id}
+                userPlaylists={this.state.userPlaylists}
+
             />
             <br />
             {/* <ReadPlaylists /> */}

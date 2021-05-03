@@ -101,6 +101,7 @@ async function getRecs(token, stateTracks, stateArtists) {
 
 
 
+
 const WritePlaylist = props => {
     const [title, setTitle] = useState("");
     const [tracks, setTracks] = useState([]);
@@ -110,6 +111,8 @@ const WritePlaylist = props => {
     const userId = auth.currentUser.uid;
     const token = props.token;
     const propsTracks = props.tracks;
+    const user_id = props.user_id;
+    const userPlaylists = props.userPlaylists;
     let playlistDivs = [];
 
     // console.log(props)
@@ -155,7 +158,7 @@ const WritePlaylist = props => {
             let pSongs = fbPlaylists[i].songs;
             // console.log(pSongs)
 
-            playlistDivs.push(<ul id={pName}>{pName} <button value={pName} onClick={e => showSongs(e)}>Show Songs</button></ul>)
+            playlistDivs.push(<ul id={pName}>{pName} <button value={pName} onClick={e => showSongs(e)}>Show Songs</button><button onClick={e => createPlaylist(e)}>Save to Spotify</button></ul>)
             // for (var k=0; k<pSongs.length; k++){
             
             //     console.log(pSongs[k].val());
@@ -203,15 +206,17 @@ const WritePlaylist = props => {
                         let span = document.createElement('span');
                         span.innerHTML = '< + link';
 
-                        let btn = document.createElement('button');
-                        btn.addEventListener('click', deleteSong);
-                        btn.innerHTML = 'Remove'
-                        btn.className += 'deleteSong'
+                        let btn1 = document.createElement('button');
+                        btn1.addEventListener('click', deleteSong);
+                        btn1.innerHTML = 'Remove'
+                        btn1.className += 'deleteSong'
+
+
     
                         li.appendChild(img)
                         // li.innerHTML = link + ', ' + showArtist + ' - ' + showAlbum;
                         li.appendChild(link)
-                        li.append(btn);
+                        li.append(btn1);
                         parentUl.appendChild(li);
     
     
@@ -221,7 +226,7 @@ const WritePlaylist = props => {
             e.target.innerHTML = 'Hide Songs'
         }
         else if (e.target.innerHTML = 'Hide Songs'){
-            for (var i=parentUl.childNodes.length; i>3; i--){
+            for (var i=parentUl.childNodes.length; i>4; i--){
                 parentUl.removeChild(parentUl.lastChild);
             }
 
@@ -243,6 +248,74 @@ const WritePlaylist = props => {
         e.target.parentElement.parentElement.removeChild(e.target.parentElement);
 
 
+    }
+
+    const createPlaylist = e => {
+        // console.log(e.target.parentElement)
+        let playlistName = e.target.parentElement.id
+      $.ajax({
+        url: "https://api.spotify.com/v1/users/"+ user_id +"/playlists",
+        type: "POST",
+        data: JSON.stringify({name: playlistName, public: false}),
+        dataType: 'json',
+        headers: { 'Authorization': 'Bearer ' + token},
+        contentType: 'application/json',
+    
+          //   data: {name: "NP", description: "", public: false},
+        // json: true,
+        success: function(response){
+          console.log(response);
+          console.log('sucess!');
+          addSongstoPlaylist(playlistName, response.id);
+        },
+        error: function(response){
+          console.log(response)
+          console.log('nope!');
+        }
+    
+      });
+    }
+
+    function addSongstoPlaylist(playlistName, playlistId){
+        console.log(userPlaylists)
+        console.log(fbPlaylists)
+        let songsForPlaylist = []
+
+        for (var i=0; i<fbPlaylists.length; i++){
+            if (fbPlaylists[i].name == playlistName){
+                songsForPlaylist = fbPlaylists[i].songs
+            }
+        }
+
+        // var playlistId = userPlaylists[0].id;
+        var uris = "uris="
+        for (const obj in songsForPlaylist){
+            uris = uris + "spotify:track:"
+            uris = uris + songsForPlaylist[obj].songId
+            uris = uris + ','
+        }
+        const finaluri = uris.slice(0, -1)
+        console.log(finaluri)
+        $.ajax({
+          url: "https://api.spotify.com/v1/playlists/"+ playlistId +"/tracks?" + finaluri,
+          type: "POST",
+          // data: JSON.stringify({name: playlistName, public: false}),
+          dataType: 'text',
+          headers: { 'Authorization': 'Bearer ' + token},
+          contentType: 'application/json',
+    
+            //   data: {name: "NP", description: "", public: false},
+          // json: true,
+          success: function(response){
+            console.log(response);
+            console.log('sucess!');
+          },
+          error: function(response){
+            console.log(response)
+            console.log('nope!');
+          }
+    
+        });
     }
 
 
@@ -310,6 +383,8 @@ const WritePlaylist = props => {
         setTitle('');
 
     }
+
+
 
     function readFromFire() {
         let playlists = []
