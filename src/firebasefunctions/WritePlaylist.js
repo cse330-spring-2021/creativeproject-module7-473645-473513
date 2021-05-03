@@ -239,13 +239,30 @@ const WritePlaylist = props => {
 
     const deleteSong = e => {
         e.preventDefault();
-        console.log(e.target.parentElement.parentElement);
         const delSongId = e.target.parentElement.id
         const delPlayId = e.target.parentElement.parentElement.id
 
         database.ref('/user_' + userId + '/' + delPlayId + '/song_' + delSongId).remove();
 
         e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+
+        // function looping(){
+            for (var i=0; i<fbPlaylists.length; i++){
+                if (fbPlaylists[i].name === delPlayId){
+                    let checkSongs = fbPlaylists[i].songs;
+                    for (const obj in fbPlaylists[i].songs){
+                        console.log(fbPlaylists[i].songs[obj])
+                        if (fbPlaylists[i].songs[obj].songId === delSongId){
+                            delete fbPlaylists[i].songs[obj];
+                            break;                        
+                        }
+                    }
+                }
+            }
+
+        // }
+
+        
 
 
     }
