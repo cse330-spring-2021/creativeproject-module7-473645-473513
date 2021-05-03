@@ -6,6 +6,9 @@
 .playlistFunctions{
     padding: 40px;
     margin: 20px;
+    background-color: white;
+    background-image: none;
+      
 }
 
 input{
@@ -15,3 +18,4 @@ input{
 a{
     font-size: larger;
 }
+

@@ -1,14 +1,39 @@
 .App {
     text-align: center;
+    background-image: url("spotifylogo.jpeg");
+    background-repeat: repeat;
+    background-size: 30px;
+  }
+  .App header{
+    text-align: center;
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 50%;
+    margin-top: 100px;
+  }
+
+  #playlists{
+    background-color: white;
+    color: black;
+    background-image: none;
+  }
+
+  .playlistFunctions{
+    background-color: white;
+    background-image: none;
   }
   
-  header{
-    background-image: "green-background.gif";
-    font-size: x-large;
-    padding-top: 60px;
-    margin-top: 60px;
+  .main-wrapper{
+    background-color: white;
+    background-image: none;
   }
-  
   /* .App-logo {
     height: 40vmin;
     pointer-events: none;

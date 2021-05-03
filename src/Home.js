@@ -20,7 +20,7 @@ class Home extends Component {
       token: null,
       user_id:"",
       // users first 50 playlists
-      userPlaylists: [{name:"", id:""}],
+      userPlaylists: [{id:"", name:""}],
       //users top tracks
       tracks: [{name:"", id:"", album: {images: [{ url: "" }]}, artists: [{ name: "" }], danceability:0, loudness: 0, energy: 0, instrumentalness: 0, valence: 0, track_href: ""}],
       // users top artists
@@ -36,6 +36,9 @@ class Home extends Component {
     this.getArtists = this.getArtists.bind(this);
     this.setUser = this.setUser.bind(this);
     this.getRecs = this.getRecs.bind(this);
+    this.addSongstoPlaylist = this.addSongstoPlaylist.bind(this);
+    this.createPlaylist = this.createPlaylist.bind(this);
+    this.tick = this.tick.bind(this);
     // this.sortTracks = this.sortTracks.bind(this);
   }
 
@@ -56,14 +59,25 @@ class Home extends Component {
       this.getArtists(_token);
       this.setUser(_token);
       this.getRecs(_token);
-      this.createPlaylist(_token);
+      // this.createPlaylist(_token);
     }
+
+    this.interval = setInterval(() => this.tick(), 10000);
 
   }
 
   componentWillUnmount() {
     // clear the interval to save resources
-    // clearInterval(this.interval);
+    clearInterval(this.interval);
+  }
+
+  tick() {
+    if(this.state.token) {
+      this.getPlaylists(this.state.token);
+      this.getArtists(this.state.token);
+      this.getTracks(this.state.token);
+      this.getRecs(this.state.token);
+   }
   }
 
  
@@ -141,8 +155,9 @@ class Home extends Component {
                             user does not give F5 and has opened his Spotify. */
         });
         this.getFeatures();
-        this.getArtists(token);
-        this.getRecs(token);
+        // this.getArtists(token);
+        // this.getRecs(token);
+        // this.getPlaylists(token);
         // this.sortTracks();
         var but = document.getElementById("createPlaylist");
         but.addEventListener("click", this.createPlaylist(token));
@@ -177,10 +192,6 @@ getRecs(token){
   }
   // sliders are all undefined rn
     var urlEnd = ""
-    // console.log(document.getElementById('loudness').value)
-    // console.log(document.getElementById('danceable').value)
-    // console.log(document.getElementById('instrumentalness').value)
-
 
     if(document.getElementById("loudness") !== null && document.getElementById("danceable") !== null && document.getElementById("instrumentalness") !== null && document.getElementById("valence") !== null && document.getElementById("energetic") !== null){
       var loudnessValue = (document.getElementById("loudness").value);
@@ -221,14 +232,14 @@ getRecs(token){
         return;
       }
 
-      console.log(data.tracks)
+      // console.log(data.tracks)
 
       this.setState({
         songsforPlaylist: data.tracks,
         no_data: false /* We need to "reset" the boolean, in case the
                           user does not give F5 and has opened his Spotify. */
       });
-      console.log(this.state.songsforPlaylist)
+      // console.log(this.state.songsforPlaylist)
 
     }
 
@@ -257,7 +268,7 @@ getRecs(token){
           no_data: false /* We need to "reset" the boolean, in case the
                             user does not give F5 and has opened his Spotify. */
         });
-        console.log(this.state.artists);
+        // console.log(this.state.artists);
       }
     });
   }
@@ -378,7 +389,7 @@ getRecs(token){
     //   // json: true,
     //   success: function(response){
     //     console.log(response);
-    //     console.log('sucess!')
+    //     console.log('sucess!');
     //   },
     //   error: function(response){
     //     console.log(response)
@@ -386,6 +397,41 @@ getRecs(token){
     //   }
 
     // });
+    this.addSongstoPlaylist(token);
+    }
+
+    addSongstoPlaylist(token){
+      // console.log(this.state.userPlaylists)
+      // console.log(this.state.songsforPlaylist)
+      // var playlistId = this.state.userPlaylists[0].id;
+      // console.log(playlistId)
+      // var uris = "uris="
+      // for(var i = 0; i < this.state.songsforPlaylist.length; i++){
+      //   uris = uris + "spotify:track:"
+      //   uris = uris + this.state.songsforPlaylist[i].id
+      //   uris = uris + ','
+      // }
+      // var finaluri = uris.slice(0, -1)
+      // $.ajax({
+      //   url: "https://api.spotify.com/v1/playlists/"+ playlistId +"/tracks?" + finaluri,
+      //   type: "POST",
+      //   // data: JSON.stringify({name: playlistName, public: false}),
+      //   dataType: 'text',
+      //   headers: { 'Authorization': 'Bearer ' + token},
+      //   contentType: 'application/json',
+  
+      //     //   data: {name: "NP", description: "", public: false},
+      //   // json: true,
+      //   success: function(response){
+      //     console.log(response);
+      //     console.log('sucess!');
+      //   },
+      //   error: function(response){
+      //     console.log(response)
+      //     console.log('nope!');
+      //   }
+  
+      // });
     }
 
       // commenting out ends here
